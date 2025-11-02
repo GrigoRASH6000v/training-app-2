@@ -1,0 +1,9 @@
+:root {
+    --bg: #f7f7f7;
+    --card: #ffffff;
+}
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto;
+    background: var(--bg);
+}
