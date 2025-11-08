@@ -1,41 +1,38 @@
-<template>
-  <div class="history-list">
-    <ul>
-      <li
-        v-for="(item, key) in items"
-        :key="item.id"
+<template lang="pug">
+  .history-list
+    ul
+      li(
+        v-for="(item, key) in items",
+        :key="item.id",
         class="history-list__item"
-      >
-        <span v-if="item?.title">{{ item.title }}</span>
-        <span v-if="item?.duration"> ({{ item.duration }} мин)</span>
-        <el-button
-          class="history-list__item-close"
-          size="small"
-          round
+      )
+        span(v-if="item?.title") {{ item.title }}
+        span(v-if="item?.duration")  ({{ item.duration }} мин)
+        el-button(
+          class="history-list__item-close",
+          size="small",
+          round,
           @click="$emit('remove', key)"
-        >
-          <icon-close size="14"/>
-        </el-button>
-      </li>
-    </ul>
-  </div>
+        )
+          icon-close(size="14")
 </template>
 
 <script>
+  import IconClose from '~/components/ui/icons/close';
 
-import IconClose from '@/components/ui/icons/close';
-export default {
-  name: 'ExercisesList',
-  components: {
-    IconClose
-  },
-  props: {
-    items: {
-      type: Array,
-      default: () => []
+
+  export default {
+    name: 'ExercisesList',
+    components: {
+      IconClose
+    },
+    props: {
+      items: {
+        type: Array,
+        default: () => []
+      }
     }
-  },
-};
+  };
 </script>
 
 <style scoped lang="scss">

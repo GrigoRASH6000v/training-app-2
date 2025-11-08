@@ -1,54 +1,46 @@
-<template>
-  <div class="plan-editor">
-    <div class="field">
-      <div class="label">Название</div>
-      <el-input v-model="title" placeholder="Например: Присед"/>
-    </div>
-    <div class="field">
-      <div class="label">Заметки</div>
-      <el-input
-        v-model="notes"
-        :rows="3"
-        type="textarea"
+<template lang="pug">
+  .plan-editor
+    .field
+      .label Название
+      el-input(v-model="title", placeholder="Например: Присед")
+    .field
+      .label Заметки
+      el-input(
+        v-model="notes",
+        :rows="3",
+        type="textarea",
         placeholder="Дополнительная информация..."
-      />
-    </div>
-    <el-button
-      :disabled="!title"
-      @click="save"
-    >
-      Сохранить план
-    </el-button>
-  </div>
+      )
+    el-button(:disabled="!title", @click="save") Сохранить план
 </template>
 
 <script>
-import { ref } from 'vue';
+  import { ref } from 'vue';
 
-export default {
-  name: 'PlanEditor',
-  emits: ['save'],
-  setup (props, { emit }) {
-    const title = ref('');
-    const notes = ref('');
+  export default {
+    name: 'PlanEditor',
+    emits: ['save'],
+    setup(props, { emit }) {
+      const title = ref('');
+      const notes = ref('');
 
-    const save = () => {
-      if (!title.value) return;
-      const plan = {
-        id: Date.now(),
-        title: title.value,
-        notes: notes.value,
-        createdAt: new Date().toISOString()
+      const save = () => {
+        if (!title.value) return;
+        const plan = {
+          id: Date.now(),
+          title: title.value,
+          notes: notes.value,
+          createdAt: new Date().toISOString()
+        };
+        emit('save', plan);
+
+        title.value = '';
+        notes.value = '';
       };
-      emit('save', plan);
-      // сброс полей
-      title.value = '';
-      notes.value = '';
-    };
 
-    return { title, notes, save };
-  }
-};
+      return { title, notes, save };
+    }
+  };
 </script>
 
 <style scoped>

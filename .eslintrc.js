@@ -1,14 +1,17 @@
 module.exports = {
-  root: true, // Означает, что ESLint не будет искать настройки выше по дереву каталогов
   env: {
-    node: true, // Включает глобальные переменные Node.js
+    browser: true,
+    es2021: true,
+    node: true
   },
   extends: [
-    'plugin:vue/vue3-essential', // Использует базовые правила для Vue 3
-    'eslint:recommended',        // Рекомендуемые правила от ESLint
+    'eslint:recommended',
+    'plugin:vue/vue3-recommended',
+    'prettier'
   ],
   parserOptions: {
-    ecmaVersion: 2020, // Позволяет использовать современный JS
+    ecmaVersion: 'latest',
+    sourceType: 'module'
   },
   rules: {
     // Свои правила — можно переопределить стандартные

@@ -1,106 +1,87 @@
-<template>
-  <el-drawer
-    :model-value="modelValue"
-    size="100%"
+<template lang="pug">
+  el-drawer(
+    :model-value="modelValue",
+    size="100%",
     @update:model-value="$emit('update:model-value', null)"
-  >
-    <div class="workout">
-      <timer
-        class="timer"
-        :initialSeconds="60"
+  )
+    .workout
+      timer(
+        class="timer",
+        :initialSeconds="60",
         @tick="handleTick"
-      />
+      )
 
-      <el-row>
-        <el-col :span="22">
-          <div class="field">
-            <div class="label">Название</div>
-            <span>{{ workout.name }}</span>
-          </div>
-        </el-col>
-        <el-col :span="2">
-          <el-button round size="small">
-            <icon-pen size="14"/>
-          </el-button>
-        </el-col>
-      </el-row>
+      el-row
+        el-col(:span="22")
+          .field
+            .label Название
+            span {{ workout.name }}
+        el-col(:span="2")
+          el-button(round, size="small")
+            icon-pen(size="14")
 
-      <div
-        v-for="(exercise, idx) in workout.exercises"
+      div(
+        v-for="(exercise, idx) in workout.exercises",
         :key="idx"
-      >
-        <el-row>
-          <el-col :span="1">
-            <div class="label">№</div>
-            <span>{{ idx + 1 }}</span>
-          </el-col>
-          <el-col :span="17">
-            <div class="field">
-              <div class="label">Название упр.</div>
-              <span>{{ store.getters.getExerciseById(exercise.id) }}</span>
-            </div>
-          </el-col>
-          <el-col :span="2">
-            <div class="field">
-              <div class="label">Пов.</div>
-              <span>{{ exercise.repetition }}</span>
-            </div>
-          </el-col>
-          <el-col :span="2">
-            <div class="field">
-              <div class="label">Под.</div>
-              <span>{{ exercise.approache }}</span>
-            </div>
-          </el-col>
-          <el-col :span="2">
-            <div class="field">
-              <div class="label">Отд.</div>
-              <span>{{ exercise.restTime }}</span>
-            </div>
-          </el-col>
-        </el-row>
-        <el-divider />
-      </div>
-    </div>
-  </el-drawer>
+      )
+        el-row
+          el-col(:span="1")
+            .label №
+            span {{ idx + 1 }}
+          el-col(:span="17")
+            .field
+              .label Название упр.
+              span {{ store.getters.getExerciseById(exercise.id) }}
+          el-col(:span="2")
+            .field
+              .label Пов.
+              span {{ exercise.repetition }}
+          el-col(:span="2")
+            .field
+              .label Под.
+              span {{ exercise.approache }}
+          el-col(:span="2")
+            .field
+              .label Отд.
+              span {{ exercise.restTime }}
+
+        el-divider
 </template>
 
 <script>
-import Timer from '@/components/Timer';
-import IconPen from '@/components/ui/icons/pen';
-import { useStore } from 'vuex';
+  import Timer from '~/components/Timer';
+  import IconPen from '~/components/ui/icons/pen';
+  import { useStore } from 'vuex';
 
-export default {
-  name: 'WorkoutModal',
-  components: { IconPen, Timer },
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false,
+  export default {
+    name: 'WorkoutModal',
+    components: { IconPen, Timer },
+    props: {
+      modelValue: {
+        type: Boolean,
+        default: false,
+      },
+      workout: {
+        type: Object,
+        default: () => ({})
+      }
     },
-    workout: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  setup() {
-    const handleTick = () => console.log('handleTick');
-    const store = useStore();
+    setup() {
+      const handleTick = () => console.log('handleTick');
+      const store = useStore();
 
-    return {
-      handleTick,
-      store
-    };
-  }
-};
+      return {
+        handleTick,
+        store
+      };
+    }
+  };
 </script>
 
 <style lang="scss" scoped>
   .workout {
     &__item {
       padding: 10px 0;
-      //border-top: 1px solid var(--el-color-primary);
-      //border-bottom: 1px solid var(--el-color-primary);
 
       &:not(:last-child) {
         margin-bottom: 15px;

@@ -11,9 +11,7 @@ export default createStore({
       return state.exercises.find(exercise => exercise.id === id) || null;
     },
     getWorkoutById: state => id => {
-      console.log(state.workouts, id);
       return state.workouts.find(workout => {
-        console.log(workout.id, id);
         return workout.id === id;
       }) || null;
     }
