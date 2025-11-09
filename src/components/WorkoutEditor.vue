@@ -1,18 +1,24 @@
 <template lang="pug">
   .workout-editor
-    h2 Создать тренировку
+    h3 Создать тренировку
 
     .field
       .label Название
-      el-input(v-model="name", placeholder="День 1")
+
+      s-validate(:v="v$.name")
+        el-input(v-model="name", placeholder="День 1")
+
+    exercise-item(
+      v-for="(exercise, idx) in exercisesFilteredByReady"
+      :key="`exercise-item-${idx}`"
+      :item-data="{ index: idx, ...exercise }"
+    )
 
     div(
-      v-for="(exercise, idx) in exercises",
+      v-for="(exercise, idx) in exercisesFilteredByEdit",
       :key="idx"
     )
       .field
-        .label Название упражнения
-
         el-select(
           v-if="exercise.isEdit",
           v-model="exercise.exerciseId",
@@ -25,8 +31,6 @@
             :value="item.id"
           )
 
-        span(v-else) {{ exercise.exerciseId }}
-
       .field(
         v-if="exercise.isEdit ? exercise.exerciseId : true"
       )
@@ -34,7 +38,7 @@
 
         el-select(
           v-if="exercise.isEdit",
-          v-model="exercise.repetition",
+          v-model="exercise.repetitions",
           placeholder="Выбор повторений"
         )
           el-option(
@@ -44,16 +48,14 @@
             :value="repetition"
           )
 
-        span(v-else) {{ exercise.repetition }}
-
       .field(
-        v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetition : true"
+        v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetitions : true"
       )
         .label Кол-во подходов
 
         el-select(
           v-if="exercise.isEdit",
-          v-model="exercise.approache",
+          v-model="exercise.approaches",
           placeholder="Выбор подходов"
         )
           el-option(
@@ -63,10 +65,8 @@
             :value="approache"
           )
 
-        span(v-else) {{ exercise.approache }}
-
       .field(
-        v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetition && exercise.approache : true"
+        v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetitions && exercise.approaches : true"
       )
         .label Время отдыха (в мин)
 
@@ -76,30 +76,37 @@
           placeholder="Задайте время"
         )
 
-        span(v-else) {{ exercise.restTime }} мин
-
-      el-button(
-        v-if="exercise.isEdit",
-        @click="saveExercise(exercise)"
-      ) Сохранить
-
     el-button(
-      v-if="exerciseIsActiveEdit",
+      v-if="!exerciseIsActiveEdit",
       @click="add"
     ) Добавить упражнение
 
     el-button(
-      v-if="exerciseIsActiveEdit",
+      v-if="saveExerciseBtnIsShow"
+      type="primary",
+      @click="saveExercise"
+    ) Сохранить упражнение
+
+    el-button(
+      v-if="saveTrainBtnIsShow"
       type="primary",
       @click="saveWorkout"
     ) Сохранить тренировку
 </template>
 
 <script>
-  import { ref, computed } from 'vue';
+  import ExerciseItem from '~/components/ExerciseItem';
+  import SValidate from '~/components/ui/SValidate';
+  import { ref, computed, reactive } from 'vue';
+  import { useVuelidate } from '@vuelidate/core';
+  import { required } from '@vuelidate/validators';
 
   export default {
     name: 'WorkoutEditor',
+    components: {
+      SValidate,
+      ExerciseItem
+    },
     props: {
       exercisesList: {
         type: Array,
@@ -109,7 +116,7 @@
     emits: ['save'],
     setup (props, { emit }) {
       const name = ref('');
-      const exercise = {
+      const exerciseEmpty = {
         exerciseId: '',
         approaches: '',
         repetitions: '',
@@ -117,19 +124,27 @@
         restTime: 1,
         isEdit: true
       };
+
       const approaches = Array.from({ length: 30 }, (_, i) => i + 1);
       const repetitions = Array.from({ length: 30 }, (_, i) => i + 1);
       const exercises = ref([]);
-      const exerciseIsActiveEdit = computed(() => exercises.value.map(exercise => exercise.isEdit).every(el => !el));
-
 
       const add = () => {
-        exercises.value.push({ id: Date.now(), ...exercise });
+        exercises.value.push({ id: Date.now(), ...exerciseEmpty });
       };
 
-      const saveExercise = exercise => {
-        exercise.isEdit = false;
-      };
+      const exercisesFilteredByReady = computed(() => exercises.value.filter(el => !el.isEdit));
+      const exercisesFilteredByEdit = computed(() => exercises.value.filter(el => el.isEdit));
+      const exerciseIsActiveEdit = computed(() => !!exercisesFilteredByEdit.value.length);
+      const currentIndex = computed(() => exercises.value.length - 1);
+      const currentExercise = computed(() => exercises.value[currentIndex.value] || null);
+      const saveTrainBtnIsShow = computed(() => exercises.value.length && !exerciseIsActiveEdit.value);
+      const saveExerciseBtnIsShow = computed(() => !!(exerciseIsActiveEdit.value && currentExercise.value && currentExercise.value.exerciseId && currentExercise.value.approaches && currentExercise.value.repetitions));
+
+
+      const saveExercise = () => {
+        exercises.value[currentIndex.value].isEdit = false;
+      }
 
       const saveWorkout = () => {
         emit('save', {
@@ -145,10 +160,28 @@
         exercises,
         approaches,
         repetitions,
-        saveExercise,
         saveWorkout,
-        exerciseIsActiveEdit
+        currentIndex,
+        saveExercise,
+        saveTrainBtnIsShow,
+        saveExerciseBtnIsShow,
+        exercisesFilteredByReady,
+        exercisesFilteredByEdit,
+        exerciseIsActiveEdit,
+        v$: useVuelidate(),
       };
+    },
+    validations () {
+      return {
+        name: { required },
+        exercises: {
+          $each: {
+            exerciseId: { required },
+            approaches: { required },
+            repetitions: { required },
+          }
+        },
+      }
     }
   };
 </script>

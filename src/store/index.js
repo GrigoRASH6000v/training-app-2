@@ -8,7 +8,7 @@ export default createStore({
   },
   getters: {
     getExerciseById: state => id => {
-      return state.exercises.find(exercise => exercise.id === id) || null;
+      return state.exercises.find(exercise => exercise.exerciseId === id) || null;
     },
     getWorkoutById: state => id => {
       return state.workouts.find(workout => {

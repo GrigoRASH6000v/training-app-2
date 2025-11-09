@@ -1,25 +1,19 @@
 <template lang="pug">
   .app
     header.header
-      h1 Планировщик и Таймер
-      el-switch(
-        active-text="Тёмная"
-        inactive-text="Светлая"
-        :model-value="isDark"
-        @change="toggleDark"
-      )
+      h2 Тренька
     main.container
       section.section.editor
         el-collapse(v-model="activePlainEditor", accordion)
           el-collapse-item(name="1")
             template(#title)
-              h1 Создать упражнение
+              h3 Создать упражнение
             plan-editor(@save="handlePlanSave")
       section.section.history
         el-collapse(v-model="exercisesList", accordion)
           el-collapse-item(name="1")
             template(#title)
-              h1 Список упражнений
+              h3 Список упражнений
             exercises-list(:items="store.state.exercises", @remove="store.commit('removeExercise', $event)")
       section.section
         workout-editor(
@@ -61,8 +55,6 @@
       const drawer = ref(false);
       const activePlainEditor = ref(0);
       const exercisesList = ref(0);
-      const isDark = useDark();
-      const toggleDark = useToggle(isDark);
       const store = useStore();
 
       watch(() => store.state.activeWorkout, newValue => drawer.value = !!newValue);
@@ -80,8 +72,6 @@
         handlePlanSave,
         exercisesList,
         handleTick,
-        toggleDark,
-        isDark,
         drawer,
         store,
       };
