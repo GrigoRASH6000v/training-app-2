@@ -1,7 +1,12 @@
 <template lang="pug">
   .app
     header.header
-      h2 Тренька
+      el-row
+        el-col(:span="12")
+          h2 Тренька
+
+        el-col(:span="12")
+          el-button(@click="store.dispatch('saveState')") сохранить
     main.container
       section.section.editor
         el-collapse(v-model="activePlainEditor", accordion)

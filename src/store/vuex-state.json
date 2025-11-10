@@ -1,0 +1,68 @@
+{
+  "exercises": [
+    {
+      "id": 1762620743273,
+      "title": "Присяд",
+      "notes": "Тест",
+      "createdAt": "2025-11-08T16:52:23.273Z"
+    },
+    {
+      "id": 1762753230392,
+      "title": "Жим от груди",
+      "notes": "",
+      "createdAt": "2025-11-10T05:40:30.392Z"
+    },
+    {
+      "id": 1762753303743,
+      "title": "Становая тяга",
+      "notes": "",
+      "createdAt": "2025-11-10T05:41:43.743Z"
+    },
+    {
+      "id": 1762753367647,
+      "title": "Скручивание",
+      "notes": "",
+      "createdAt": "2025-11-10T05:42:47.647Z"
+    }
+  ],
+  "workouts": [
+    {
+      "id": 1762620788223,
+      "name": "День 1",
+      "exercises": [
+        {
+          "id": 1762620759053,
+          "exerciseId": 1762620743273,
+          "approaches": "",
+          "repetitions": "",
+          "weight": 0,
+          "restTime": 3,
+          "isEdit": false,
+          "repetition": 9,
+          "approache": 3
+        }
+      ]
+    },
+    {
+      "id": 1762632034112,
+      "name": "",
+      "exercises": []
+    },
+    {
+      "id": 1762716879312,
+      "name": "test",
+      "exercises": [
+        {
+          "id": 1762716782376,
+          "exerciseId": 1762620743273,
+          "approaches": 3,
+          "repetitions": 9,
+          "weight": 0,
+          "restTime": 3,
+          "isEdit": false
+        }
+      ]
+    }
+  ],
+  "activeWorkout": null
+}

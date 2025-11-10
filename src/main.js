@@ -4,13 +4,14 @@ import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import 'element-plus/theme-chalk/dark/css-vars.css';
 import 'normalize.css';
+import './style.css';
 import router from './router';
 import store from './store';
 import { Vue3Mq } from 'vue3-mq';
 
 store.subscribe((mutation, state) => {
   if (state) {
-    localStorage.setItem('state', JSON.stringify(state));
+    localStorage.setItem('state', JSON.stringify(state))
   }
 });
 
