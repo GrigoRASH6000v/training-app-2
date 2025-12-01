@@ -25,44 +25,6 @@
       "createdAt": "2025-11-10T05:42:47.647Z"
     }
   ],
-  "workouts": [
-    {
-      "id": 1762620788223,
-      "name": "День 1",
-      "exercises": [
-        {
-          "id": 1762620759053,
-          "exerciseId": 1762620743273,
-          "approaches": "",
-          "repetitions": "",
-          "weight": 0,
-          "restTime": 3,
-          "isEdit": false,
-          "repetition": 9,
-          "approache": 3
-        }
-      ]
-    },
-    {
-      "id": 1762632034112,
-      "name": "",
-      "exercises": []
-    },
-    {
-      "id": 1762716879312,
-      "name": "test",
-      "exercises": [
-        {
-          "id": 1762716782376,
-          "exerciseId": 1762620743273,
-          "approaches": 3,
-          "repetitions": 9,
-          "weight": 0,
-          "restTime": 3,
-          "isEdit": false
-        }
-      ]
-    }
-  ],
+  "workouts": [],
   "activeWorkout": null
 }

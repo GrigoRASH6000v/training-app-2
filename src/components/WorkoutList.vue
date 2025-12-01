@@ -7,6 +7,7 @@
       :key="index",
       :item-data="item"
       @start="$emit('start', $event)"
+      @remove="$emit('remove', $event)"
     )
 </template>
 

@@ -7,15 +7,15 @@
       el-col(:span="17")
         .field
           .label Название упр.
-          span {{ getExercise(itemData.exercisId) }}
+          span {{ store.getters.getExerciseById(itemData.exerciseId)?.title || '' }}
       el-col(:span="2")
         .field
           .label Пов.
-          span {{ itemData.repetitions }}
+          span {{ itemData.repetition }}
       el-col(:span="2")
         .field
           .label Под.
-          span {{ itemData.approaches }}
+          span {{ itemData.approache }}
       el-col(:span="2")
         .field
           .label Отд.
@@ -36,9 +36,8 @@
     },
     setup() {
       const store = useStore();
-      const getExercise = id => store.getters.getExerciseById(id)?.title || '';
       return {
-        getExercise
+        store,
       };
     }
   }

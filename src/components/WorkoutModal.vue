@@ -31,7 +31,7 @@
           el-col(:span="17")
             .field
               .label Название упр.
-              span {{ store.getters.getExerciseById(exercise.id) }}
+              span {{ store.getters.getExerciseById(exercise.exerciseId)?.title || '' }}
           el-col(:span="2")
             .field
               .label Пов.

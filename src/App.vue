@@ -23,12 +23,15 @@
       section.section
         workout-editor(
           :exercises-list="store.state.exercises"
+          :edited-workout="store.state.editedWorkout"
+          @edited-workout:update="store.commit('setEditedWorkout', $event)"
           @save="store.commit('addWorkout', $event)"
         )
       section.section
         workout-list(
           v-model="store.state.workouts"
           @start="store.commit('setActiveWorkout', $event)"
+          @remove="store.commit('removeWorkout', $event)"
         )
       workout-modal(
         :model-value="!!store.state.activeWorkout"
@@ -43,7 +46,6 @@
   import WorkoutList from '~/components/WorkoutList';
   import PlanEditor from '~/components/PlanEditor';
   import ExercisesList from '~/components/ExercisesList';
-  import { useDark, useToggle } from '@vueuse/core';
   import { useStore } from 'vuex';
   import { ref, watch } from 'vue';
 

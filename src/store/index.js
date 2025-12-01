@@ -7,10 +7,11 @@ export default createStore({
     exercises: [],
     workouts: [],
     activeWorkout: null,
+    editedWorkout: null,
   },
   getters: {
     getExerciseById: state => id => {
-      return state.exercises.find(exercise => exercise.exerciseId === id) || null;
+      return state.exercises.find(exercise => exercise.id === id) || null;
     },
     getWorkoutById: state => id => {
       return state.workouts.find(workout => {
@@ -19,6 +20,12 @@ export default createStore({
     }
   },
   mutations: {
+    setEditedWorkout(state, payload) {
+      state.editedWorkout = payload;
+    },
+    removeWorkout(state, payload) {
+      state.workouts = state.workouts.filter(workout => workout.id !== payload);
+    },
     setActiveWorkout(state, payload) {
       state.activeWorkout = payload;
     },
@@ -36,8 +43,13 @@ export default createStore({
     initializeStore({ state, }) {
       if (localStorage.getItem('state')) {
         this.replaceState(
-          Object.assign(state, JSON.parse(localStorage.getItem('state')))
+          Object.assign(state, {
+            ...JSON.parse(localStorage.getItem('state')),
+            activeWorkout: null,
+            editedWorkout: null,
+          })
         );
+
       } else if(vuexState) {
         this.replaceState(
           Object.assign(state, vuexState)

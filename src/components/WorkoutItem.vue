@@ -1,13 +1,22 @@
 <template lang="pug">
   .workout-item
     el-row
-      el-col(:span="22")
+      el-col(:span="18")
         .field
           .label Название
           span {{ itemData.name }}
-      el-col(:span="2")
-        el-button(round, size="small")
-          icon-pen(size="14")
+      el-col(:span="6")
+        .flex
+          el-button(round, size="small")
+            icon-pen(size="14")
+
+          el-button(
+            round,
+            size="small"
+            type="danger"
+            @click="remove(itemData.id)"
+          )
+            icon-remove(size="14")
 
     exercise-item(
       v-for="(exercise, idx) in itemData.exercises",
@@ -16,22 +25,48 @@
     )
       el-row
         el-col(:span="6")
-          el-button(type="primary", @click="$emit('start', item.id)") Начать
+          el-button(type="primary", @click="$emit('start', itemData.id)") Начать
 
       el-divider
 </template>
 
 <script>
   import IconPen from '~/components/ui/icons/pen';
+  import IconRemove from '~/components/ui/icons/remove';
   import ExerciseItem from '~/components/ExerciseItem';
+  import { ElMessageBox } from 'element-plus';
 
   export default {
-    components: { IconPen, ExerciseItem },
+    components: {
+      IconPen,
+      ExerciseItem,
+      IconRemove
+    },
     props: {
       itemData: {
         type: Object,
         default: () => ({})
+      },
+    },
+    setup(_, { emit }) {
+      const remove = id => {
+
+        ElMessageBox.confirm(
+          'Вы уверены, что хотите удалить этот элемент?',
+          'Подтверждение действия',
+          {
+            confirmButtonText: 'Да',
+            cancelButtonText: 'Нет',
+            type: 'warning',
+            center: true
+          },
+        )
+          .then(() => {
+            emit('remove', id)
+          })
       }
+
+      return { remove }
     }
   }
 </script>
