@@ -3,7 +3,7 @@
     header.header
       el-row
         el-col(:span="12")
-          h2 Тренька
+          .text-xs.font-bold Тренька
 
         el-col(:span="12")
           el-button(@click="store.dispatch('saveState')") сохранить
@@ -12,13 +12,13 @@
         el-collapse(v-model="activePlainEditor", accordion)
           el-collapse-item(name="1")
             template(#title)
-              h3 Создать упражнение
+              .text-xs.font-bold Создать упражнение
             plan-editor(@save="handlePlanSave")
       section.section.history
         el-collapse(v-model="exercisesList", accordion)
           el-collapse-item(name="1")
             template(#title)
-              h3 Список упражнений
+              .text-xs.font-bold Список упражнений
             exercises-list(:items="store.state.exercises", @remove="store.commit('removeExercise', $event)")
       section.section
         workout-editor(

@@ -1,7 +1,7 @@
 <template lang="pug">
   .workout-editor
     .flex.items-center.justify-between
-      h3 Создать тренировку
+      .text-xs.font-bold Создать тренировку
       el-button(
         v-if="!editedWorkout"
         size="small"
@@ -169,6 +169,7 @@
 
       const saveWorkout = () => {
         emit('save', {
+          id: Date.now(),
           name: name.value,
           exercises: exercises.value
         });
