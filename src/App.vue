@@ -91,15 +91,19 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     color: #333;
     background-color: #f5f5f5;
+    min-height: 100dvh;
   }
+
   .header {
+    max-width: 400px;
+    margin: 0 auto;
     padding: 1rem;
     background: #f5f5f5;
     border-bottom: 1px solid #e0e0e0;
   }
   .container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 1rem;
     padding: 1rem;
     max-width: 400px;
@@ -110,10 +114,5 @@
     border: 1px solid #eaeaea;
     border-radius: 8px;
     padding: 1rem;
-  }
-  @media (max-width: 900px) {
-    .container {
-      grid-template-columns: 1fr;
-    }
   }
 </style>
