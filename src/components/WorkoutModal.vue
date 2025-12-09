@@ -6,7 +6,6 @@
   )
 
     .workout
-      el-button(@click="store.commit('clearHistory')") clear history
       timer(
         class="timer",
         :initialSeconds="60",
@@ -54,12 +53,24 @@
                 el-col(:span="8")
                   .flex.items-center.h-full
                     .text-xs {{ getOrdinal(index + 1) }}
-                el-col(:span="12")
+                el-col(:span="9")
                   el-input-number(
                     v-model="approache.weight"
                     :disabled="!approache.isActive"
                     size="small"
                   )
+                el-col(:span="3")
+                  .flex.justify-center.h-full.items-center
+                    icon-arrow-trend-up(
+                      v-if="getTrend(idx, index, approache.weight) > 0"
+                      size="14"
+                      :color="colors.green[500]"
+                    )
+                    icon-arrow-trend-down(
+                      v-if="getTrend(idx, index, approache.weight) < 0"
+                      size="14"
+                      :color="colors.red[500]"
+                    )
                 el-col(:span="4")
                   el-button.ml-4(
                     :disabled="!approache.isActive || approache.weight === 0"
@@ -78,6 +89,8 @@
   import Timer from '~/components/Timer';
   import IconSave from '~/components/ui/icons/save';
   import IconPen from '~/components/ui/icons/pen';
+  import IconArrowTrendUp from '~/components/ui/icons/arrow-trend-up';
+  import IconArrowTrendDown from '~/components/ui/icons/arrow-trend-down';
   import IconStop from '~/components/ui/icons/stop';
   import IconPlay from '~/components/ui/icons/play';
   import ExerciseItem from '~/components/ExerciseItem';
@@ -95,9 +108,11 @@
       IconPen,
       IconStop,
       IconSave,
+      IconPlay,
+      IconArrowTrendUp,
+      IconArrowTrendDown,
       Timer,
       ExerciseItem,
-      IconPlay,
       SExpander
     },
     props: {
@@ -116,18 +131,23 @@
 
       const lastIdenticalWorkout = store.state.history.reverse().find(el => el.workoutId === props.workout.id) || null;
 
-      console.log('lastIdenticalWorkout', lastIdenticalWorkout);
-
-      const getWeight = (exerciseId, approacheIndex) => {
-        const res = lastIdenticalWorkout ? lastIdenticalWorkout.exercises.find(el => el.exerciseId === exerciseId)?.approache?.[approacheIndex]?.weight || 0 : 0;
-        console.log('tesr', lastIdenticalWorkout.exercises.find(el => el.exerciseId === exerciseId))
+      const getWeight = (exercise, approacheIndex) => {
+        const res = lastIdenticalWorkout ? lastIdenticalWorkout.exercises.find(el => el.exerciseId === exercise.exerciseId)?.approache?.[approacheIndex]?.weight || 0 : 0;
         return res;
+      };
+
+      const getTrend = (exerciseIdx, approacheIdx, weight) => {
+        return lastIdenticalWorkout ? weight - lastIdenticalWorkout.exercises[exerciseIdx]?.approache?.[approacheIdx]?.weight || 0 : 0 ;
       };
 
       const updatedExercises = ref(props.workout.exercises.map(exercise => ({
         ...exercise,
         isActive: false,
-        approache: Array(exercise.approache).fill(null).map((_, index) => ({ weight: getWeight(exercise.exerciseId, index), isActive: index === 0 }))
+        approache: Array(exercise.approache).fill(null).map((_, index) => ({
+          weight: getWeight(exercise, index),
+          trend: getTrend(exercise, index),
+          isActive: index === 0
+        }))
       })));
 
       const saveApproache = (approache, index) => {
@@ -140,11 +160,8 @@
       }
 
       const saveExercise = exercise => {
-
-        console.log('exercise', exercise)
-
         ElMessageBox.confirm(
-          'Вы уверены, что сохранить упражнение в историю?',
+          'Сохранить упражнение в историю?',
           'Подтверждение действия',
           {
             confirmButtonText: 'Да',
@@ -162,6 +179,7 @@
             });
             exercise.isActive = false;
           })
+          .catch(() => exercise.isActive = false)
       }
 
       const toggleActiveExercise = exercise => {
@@ -171,6 +189,7 @@
       return {
         store,
         colors,
+        getTrend,
         getOrdinal,
         runExercise,
         saveExercise,
