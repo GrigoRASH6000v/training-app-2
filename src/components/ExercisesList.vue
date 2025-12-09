@@ -6,25 +6,25 @@
         :key="item.id",
         class="history-list__item"
       )
-        span(v-if="item?.title") {{ item.title }}
-        span(v-if="item?.duration")  ({{ item.duration }} мин)
+        .text-xs(v-if="item?.title") {{ item.title }}
         el-button(
           class="history-list__item-close",
           size="small",
-          round,
+          round
+          type="danger"
           @click="$emit('remove', key)"
         )
-          icon-close(size="14")
+          icon-remove(size="14")
 </template>
 
 <script>
-  import IconClose from '~/components/ui/icons/close';
+  import IconRemove from '~/components/ui/icons/remove';
 
 
   export default {
     name: 'ExercisesList',
     components: {
-      IconClose
+      IconRemove
     },
     props: {
       items: {
