@@ -1,43 +1,53 @@
 <template lang="pug">
   .exercise-item
     el-row
-      el-col(:span="1")
-        .label №
-        span {{ itemData.index + 1 }}
-      el-col(:span="17")
-        .field
-          .label Название упр.
-          span {{ store.getters.getExerciseById(itemData.exerciseId)?.title || '' }}
+      el-col(:span="$slots.default ? 14 : 17")
+        .flex.flex-col
+          .text-xs.text-gray-500 Название упр.
+          .text-xs {{ store.getters.getExerciseById(itemData.exerciseId)?.title || '' }}
       el-col(:span="2")
-        .field
-          .label Пов.
-          span {{ itemData.repetition }}
+        .flex.flex-col
+          .text-xs.text-gray-500 Пов.
+          .text-xs {{ itemData.repetition }}
       el-col(:span="2")
-        .field
-          .label Под.
-          span {{ itemData.approache }}
+        .flex.flex-col
+          .text-xs.text-gray-500 Под.
+          .text-xs {{ isArray(itemData.approache) ? itemData.approache.length : itemData.approache }}
       el-col(:span="2")
-        .field
-          .label Отд.
-          span {{ itemData.restTime }}
+        .flex.flex-col
+          .text-xs.text-gray-500 Отд.
+          .text-xs {{ itemData.restTime }}
+      el-col(v-if="$slots.default" :span="4")
+        .ml-4
+          slot
 
-    slot
+    el-divider(v-if="divider")
 </template>
 
 <script>
-  import {useStore} from "vuex";
+  import IconPlay from '~/components/ui/icons/play';
+  import { isArray } from 'lodash';
+  import { useStore } from "vuex";
 
   export default {
+    components: {
+      IconPlay
+    },
     props: {
       itemData: {
         type: Object,
         default: () => ({})
+      },
+      divider: {
+        type: Boolean,
+        default: false
       }
     },
     setup() {
       const store = useStore();
       return {
         store,
+        isArray
       };
     }
   }
@@ -45,6 +55,9 @@
 
 <style lang="scss">
   .exercise-item {
+    .el-divider--horizontal {
+      margin: 12px 0;
+    }
     .label {
       font-size: 12px;
       color: #555;

@@ -8,6 +8,7 @@ export default createStore({
     workouts: [],
     activeWorkout: null,
     editedWorkout: null,
+    history: [],
   },
   getters: {
     getExerciseById: state => id => {
@@ -37,9 +38,31 @@ export default createStore({
     },
     addWorkout(state, payload) {
       state.workouts.push(payload);
+    },
+    updateWorkout(state, payload) {
+      const index = state.workouts.findIndex(workout => workout.id === payload.id);
+      state.workouts[index] = payload;
+    },
+    updateHistory(state, { index, value }) {
+      state.history[index] = value;
+    },
+    clearHistory(state) {
+      state.history = [];
+    },
+    addHistory(state, value) {
+      state.history.push(value);
     }
   },
   actions: {
+    saveWorkoutToHistory({ state, commit }, workout) {
+      const historyItemIndex = state.history.findIndex(el => el.id === workout.id);
+
+      if (~historyItemIndex) {
+        commit('updateHistory', { index: historyItemIndex, value: workout });
+      } else {
+        commit('addHistory', workout);
+      }
+    },
     initializeStore({ state, }) {
       if (localStorage.getItem('state')) {
         this.replaceState(

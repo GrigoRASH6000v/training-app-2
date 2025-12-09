@@ -11,7 +11,14 @@ import { Vue3Mq } from 'vue3-mq';
 
 store.subscribe((mutation, state) => {
   if (state) {
-    localStorage.setItem('state', JSON.stringify(state))
+    const excludedKeys = [];
+    const filteredState = Object.keys(state).reduce((acc, key) => {
+      if (!excludedKeys.includes(key)) {
+        acc[key] = state[key]
+      }
+      return acc;
+    }, {})
+    localStorage.setItem('state', JSON.stringify(filteredState))
   }
 });
 

@@ -1,6 +1,6 @@
 <template lang="pug">
   .workout-list
-    .text-xs.font-bold Список тренировок
+    .text-xs.font-bold.mb-2 Список тренировок
 
     workout-item(
       v-for="(item, index) in modelValue",
@@ -8,6 +8,7 @@
       :item-data="item"
       @start="$emit('start', $event)"
       @remove="$emit('remove', $event)"
+      @edit="$emit('edit', $event)"
     )
 </template>
 

@@ -1,13 +1,17 @@
 <template lang="pug">
   .workout-item
     el-row
-      el-col(:span="18")
-        .field
-          .label Название
-          span {{ itemData.name }}
-      el-col(:span="6")
+      el-col.mb-4(:span="17")
+        .flex.flex-col
+          .text-xs.text-gray-500 Название
+          .text-xs {{ itemData.name }}
+      el-col(:span="7")
         .flex
-          el-button(round, size="small")
+          el-button(
+            round,
+            size="small"
+            @click="emit('edit', itemData)"
+          )
             icon-pen(size="14")
 
           el-button(
@@ -18,16 +22,15 @@
           )
             icon-remove(size="14")
 
-    exercise-item(
+    exercise-item.mb-4(
       v-for="(exercise, idx) in itemData.exercises",
       :key="idx"
       :item-data="{ index: idx,  ...exercise }"
     )
-      el-row
-        el-col(:span="6")
-          el-button(type="primary", @click="$emit('start', itemData.id)") Начать
-
-      el-divider
+    el-row
+      el-col(:span="6")
+        el-button(type="primary", @click="$emit('start', itemData.id)") Начать
+    el-divider
 </template>
 
 <script>
@@ -65,7 +68,7 @@
           })
       }
 
-      return { remove }
+      return { remove, emit }
     }
   }
 </script>
@@ -75,18 +78,6 @@
     .field {
       display: flex;
       flex-direction: column;
-    }
-
-    .label {
-      font-size: 12px;
-      color: #555;
-      margin-bottom: 4px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 16px;
     }
   }
 </style>

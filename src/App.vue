@@ -1,12 +1,9 @@
 <template lang="pug">
   .app
     header.header
-      el-row
-        el-col(:span="12")
-          .text-xs.font-bold Тренька
-
-        el-col(:span="12")
-          el-button(@click="store.dispatch('saveState')") сохранить
+      .grid.grid-cols-3.items-center
+        .text-xs.font-bold.col-span-2 Тренька
+        el-button(@click="store.dispatch('saveState')") сохранить
     main.container
       section.section.editor
         el-collapse(v-model="activePlainEditor", accordion)
@@ -26,14 +23,17 @@
           :edited-workout="store.state.editedWorkout"
           @edited-workout:update="store.commit('setEditedWorkout', $event)"
           @save="store.commit('addWorkout', $event)"
+          @update="store.commit('updateWorkout', $event)"
         )
       section.section
         workout-list(
           v-model="store.state.workouts"
           @start="store.commit('setActiveWorkout', $event)"
           @remove="store.commit('removeWorkout', $event)"
+          @edit="store.commit('setEditedWorkout', $event)"
         )
       workout-modal(
+        v-if="!!store.state.activeWorkout"
         :model-value="!!store.state.activeWorkout"
         :workout="store.getters.getWorkoutById(store.state.activeWorkout)"
         @update:model-value="store.commit('setActiveWorkout', $event)"

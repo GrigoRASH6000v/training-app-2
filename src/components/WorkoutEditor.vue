@@ -17,11 +17,18 @@
         s-validate(:v="v$.name")
           el-input(v-model="name", placeholder="День 1")
 
-      exercise-item(
+      exercise-item.mb-4(
         v-for="(exercise, idx) in exercisesFilteredByReady"
         :key="`exercise-item-${idx}`"
         :item-data="{ index: idx, ...exercise }"
       )
+        el-button(
+          round
+          type="danger"
+          size="small"
+          @click="removeExercise(exercise.exerciseId)"
+        )
+          icon-remove(size="14")
 
       div(
         v-for="(exercise, idx) in exercisesFilteredByEdit",
@@ -85,29 +92,31 @@
             placeholder="Задайте время"
           )
 
-      el-button(
-        v-if="!exerciseIsActiveEdit",
-        @click="add"
-      ) Добавить упражнение
+      .flex.flex-col
+        el-button(
+          v-if="!exerciseIsActiveEdit",
+          @click="add"
+        ) Добавить упражнение
 
-      el-button(
-        v-if="saveExerciseBtnIsShow"
-        type="primary",
-        @click="saveExercise"
-      ) Сохранить упражнение
+        el-button(
+          v-if="saveExerciseBtnIsShow"
+          type="primary",
+          @click="saveExercise"
+        ) Сохранить упражнение
 
-      el-button(
-        v-if="saveTrainBtnIsShow"
-        type="primary",
-        @click="saveWorkout"
-      ) Сохранить тренировку
+        el-button(
+          v-if="saveTrainBtnIsShow"
+          type="primary",
+          @click="editedWorkout.id ? updateWorkout() : saveWorkout()"
+        ) {{ editedWorkout.id ? 'Обновить' : 'Сохранить тренировку' }}
 </template>
 
 <script>
   import IconPlus from '~/components/ui/icons/plus';
   import ExerciseItem from '~/components/ExerciseItem';
   import SValidate from '~/components/ui/SValidate';
-  import { ref, computed, reactive } from 'vue';
+  import IconRemove from '~/components/ui/icons/remove';
+  import {ref, computed, toRaw, watch} from 'vue';
   import { useVuelidate } from '@vuelidate/core';
   import { required } from '@vuelidate/validators';
 
@@ -116,7 +125,8 @@
     components: {
       SValidate,
       ExerciseItem,
-      IconPlus
+      IconPlus,
+      IconRemove
     },
     props: {
       exercisesList: {
@@ -128,9 +138,9 @@
         default: () => ({})
       }
     },
-    emits: ['save', 'edited-workout:update'],
+    emits: ['save', 'edited-workout:update', 'update'],
     setup (props, { emit }) {
-      const name = ref('');
+      let name = ref('');
       const exerciseEmpty = {
         exerciseId: '',
         approache: '',
@@ -142,10 +152,10 @@
 
       const approaches = Array.from({ length: 30 }, (_, i) => i + 1);
       const repetitions = Array.from({ length: 30 }, (_, i) => i + 1);
-      const exercises = ref([]);
+      let exercises = ref([]);
 
       const add = () => {
-        exercises.value.push({ id: Date.now(), ...exerciseEmpty });
+        exercises.value.push(structuredClone(exerciseEmpty));
       };
 
       const exercisesFilteredByReady = computed(() => exercises.value.filter(el => !el.isEdit));
@@ -176,13 +186,31 @@
         reset();
       };
 
+      const updateWorkout = () => {
+        emit('update', {
+          id: props.editedWorkout.id,
+          name: name.value,
+          exercises: exercises.value
+        });
+        reset();
+      };
+
       const create = () => {
         emit('edited-workout:update', {
-          id: Date.now(),
+          id: null,
           name: '',
           exercises: []
         });
       }
+
+      const fillData = () => {
+        name.value = ref(props.editedWorkout.name).value;
+        exercises.value = ref(props.editedWorkout.exercises).value;
+      };
+
+      const removeExercise = id => exercises.value = exercises.value.filter(exercise => exercise.exerciseId !== id);
+
+      watch(() => props.editedWorkout, newValue => newValue && fillData());
 
       return {
         name,
@@ -192,6 +220,8 @@
         approaches,
         repetitions,
         saveWorkout,
+        updateWorkout,
+        removeExercise,
         currentIndex,
         saveExercise,
         saveTrainBtnIsShow,
