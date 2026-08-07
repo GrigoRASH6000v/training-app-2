@@ -3,7 +3,7 @@
     header.header
       .grid.grid-cols-3.items-center
         .text-xs.font-bold.col-span-2 Тренька
-        .text-xs.font-bold.col-span-1.text-right v1.0.1
+        .text-xs.font-bold.col-span-1.text-right v1.0.2
     main.container
       section.section.editor
         el-collapse(v-model="activePlainEditor", accordion)

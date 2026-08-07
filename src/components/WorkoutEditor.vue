@@ -26,7 +26,7 @@
           round
           type="danger"
           size="small"
-          @click="removeExercise(exercise.exerciseId)"
+          @click.stop="removeExercise(exercise.exerciseId)"
         )
           icon-remove(size="14")
 
