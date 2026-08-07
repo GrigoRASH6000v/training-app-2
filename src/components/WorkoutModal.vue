@@ -1,6 +1,7 @@
 <template lang="pug">
   el-drawer(
     :model-value="modelValue",
+    :with-header="false"
     size="100%",
     @update:model-value="$emit('update:model-value', null)"
   )
