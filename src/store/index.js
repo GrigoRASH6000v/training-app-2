@@ -8,9 +8,16 @@ export default createStore({
     workouts: [],
     activeWorkout: null,
     editedWorkout: null,
+    editedExercise: null,
     history: [],
   },
   getters: {
+    getExerciseInWorkoutById: state => id => {
+      console.log(id, state.editedWorkout)
+      if (!state.editedWorkout) return null;
+      console.log(id, state.editedWorkout.exercises)
+      return state.editedWorkout.exercises.find(exercise => exercise.exerciseId === id);
+    },
     getExerciseById: state => id => {
       return state.exercises.find(exercise => exercise.id === id) || null;
     },
@@ -21,6 +28,19 @@ export default createStore({
     }
   },
   mutations: {
+    updateExerciseInWorkout(state, { workoutId, exerciseId, updates }) {
+      const workoutIndex = state.workouts.findIndex(workout => workout.id === workoutId);
+      if (~workoutIndex) {
+        const exerciseIndex = state.workouts[workoutIndex].exercises.findIndex(exercise => exercise.exerciseId === exerciseId);
+        if (~exerciseIndex) {
+          const exercise = state.workouts[workoutIndex].exercises[exerciseIndex];
+          state.workouts[workoutIndex].exercises[exerciseIndex] = { ...exercise, ...updates};
+        }
+      }
+    },
+    setEditedExercise(state, payload) {
+      state.editedExercise = payload;
+    },
     setEditedWorkout(state, payload) {
       state.editedWorkout = payload;
     },

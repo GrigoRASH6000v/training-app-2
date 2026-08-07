@@ -11,11 +11,12 @@
         type="textarea",
         placeholder="Дополнительная информация..."
       )
-    el-button(:disabled="!title", @click="save") Сохранить план
+    el-button(:disabled="!title" @click="save") Сохранить упражнение
 </template>
 
 <script>
   import { ref } from 'vue';
+  import { ElNotification } from 'element-plus'
 
   export default {
     name: 'PlanEditor',
@@ -36,6 +37,7 @@
 
         title.value = '';
         notes.value = '';
+        ElNotification.success({ title: 'Готово', message: 'Упражнение добавлено!' })
       };
 
       return { title, notes, save };

@@ -14,7 +14,7 @@
           type="danger"
           @click="$emit('remove', key)"
         )
-          icon-remove(size="14")
+          icon-remove(size="14" color="#fff")
 </template>
 
 <script>

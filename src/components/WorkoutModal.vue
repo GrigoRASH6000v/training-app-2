@@ -6,10 +6,16 @@
   )
 
     .workout
-      timer(
-        class="timer",
-        :initialSeconds="60",
-      )
+      .bg-white.sticky.top-0.z-4
+        .flex.items-center.justify-between
+          timer(:initial-seconds="currentTime")
+          el-button(
+            text
+            size="small"
+            @click="closeDrawer"
+          )
+            icon-close
+        el-divider
 
       el-row.mb-4
         el-col(:span="22")
@@ -93,11 +99,12 @@
   import IconArrowTrendDown from '~/components/ui/icons/arrow-trend-down';
   import IconStop from '~/components/ui/icons/stop';
   import IconPlay from '~/components/ui/icons/play';
+  import IconClose from '~/components/ui/icons/close';
   import ExerciseItem from '~/components/ExerciseItem';
   import SExpander from '~/components/ui/SExpander';
   import { useStore } from 'vuex';
   import colors from 'tailwindcss/colors';
-  import { ref, toRaw } from 'vue';
+  import { ref, toRaw, computed } from 'vue';
   import getOrdinal from '~/utils/getOrdinal';
   import { ElMessageBox } from 'element-plus';
 
@@ -109,6 +116,7 @@
       IconStop,
       IconSave,
       IconPlay,
+      IconClose,
       IconArrowTrendUp,
       IconArrowTrendDown,
       Timer,
@@ -125,16 +133,29 @@
         default: () => ({})
       }
     },
-    setup(props) {
+    setup(props, ctx) {
       const store = useStore();
       const historyId = Date.now();
-
       const lastIdenticalWorkout = store.state.history.reverse().find(el => el.workoutId === props.workout.id) || null;
 
       const getWeight = (exercise, approacheIndex) => {
         const res = lastIdenticalWorkout ? lastIdenticalWorkout.exercises.find(el => el.exerciseId === exercise.exerciseId)?.approache?.[approacheIndex]?.weight || 0 : 0;
         return res;
       };
+
+      const closeDrawer = () => {
+        ElMessageBox.confirm(
+          'Завершить тренировку?',
+          'Подтверждение действия',
+          {
+            confirmButtonText: 'Да',
+            cancelButtonText: 'Нет',
+            type: 'warning',
+            center: true
+          },
+        )
+          .then(() => ctx.emit('update:model-value', null))
+      }
 
       const getTrend = (exerciseIdx, approacheIdx, weight) => {
         return lastIdenticalWorkout ? weight - lastIdenticalWorkout.exercises[exerciseIdx]?.approache?.[approacheIdx]?.weight || 0 : 0 ;
@@ -149,6 +170,10 @@
           isActive: index === 0
         }))
       })));
+
+      const currentTime = computed(() => {
+        return updatedExercises.value.find(exercise => exercise.isActive && exercise.approache.length ? !!exercise.approache.find(approache => approache.isActive) : false)?.restTime * 60 || 120;
+      });
 
       const saveApproache = (approache, index) => {
         approache[index].isActive = false;
@@ -191,7 +216,9 @@
         colors,
         getTrend,
         getOrdinal,
+        currentTime,
         runExercise,
+        closeDrawer,
         saveExercise,
         saveApproache,
         updatedExercises,
@@ -203,9 +230,9 @@
 
 <style lang="scss" scoped>
   .workout {
-    .timer {
-      margin-bottom: 40px;
-    }
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     .el-divider--horizontal {
       margin: 12px 0;

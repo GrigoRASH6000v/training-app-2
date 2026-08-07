@@ -1,18 +1,34 @@
 <template lang="pug">
-  .timer
-    h2 Таймер
-    .display {{ minutes }} : {{ secondsTwoDigits }}
+  .flex.justify-center.items-center
+    .text-2xl.font-bold.mr-4(:class="{'blink-red': timeIsOver}") {{ minutes }} : {{ secondsTwoDigits }}
     .controls
-      el-button(:disabled="running", @click="start") Старт
-      el-button(:disabled="!running", @click="pause") Пауза
-      el-button(@click="reset") Сброс
+      el-button(
+        text
+        size="small"
+        @click="running ? pause() : start()"
+      )
+        icon-pause(v-if="running" size="16")
+        icon-play(v-else size="16")
+
+      el-button(@click="reset"  size="small") Сброс
 </template>
 
 <script>
-  import { ref, computed, onUnmounted, watch } from 'vue';
+  import IconPlay from '~/components/ui/icons/play';
+  import IconPause from '~/components/ui/icons/pause';
+  import {
+    ref,
+    computed,
+    onUnmounted,
+    watch
+  } from 'vue';
 
   export default {
     name: 'Timer',
+    components: {
+      IconPlay,
+      IconPause
+    },
     props: {
       initialSeconds: {
         type: Number,
@@ -23,14 +39,26 @@
     setup(props) {
       const total = ref(0);
       const running = ref(false);
+      const timeIsOver = ref(false);
       let timer = null;
 
       const minutes = computed(() => Math.floor(total.value / 60));
       const seconds = computed(() => total.value % 60);
       const secondsTwoDigits = computed(() => String(seconds.value).padStart(2, '0'));
 
+      watch(() => props.initialSeconds, value => {
+        total.value = value;
+
+      }, { immediate: true })
+
       const tick = () => {
-        total.value += 1;
+        if (total.value !== 0) {
+          total.value -= 1;
+        } else {
+          clearInterval(timer)
+          timeIsOver.value = true;
+        }
+
       };
 
       const start = () => {
@@ -49,7 +77,8 @@
 
       const reset = () => {
         pause();
-        total.value = 0;
+        total.value = props.initialSeconds;
+        timeIsOver.value = false;
       };
 
       onUnmounted(() => {
@@ -61,7 +90,7 @@
         total.value = n;
       });
 
-      return {minutes, secondsTwoDigits, running, start, pause, reset};
+      return {minutes, secondsTwoDigits, running, timeIsOver, start, pause, reset};
     }
   };
 </script>
@@ -97,5 +126,25 @@
   button[disabled] {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  @keyframes blink-red {
+    0% {
+      opacity: 1;
+      filter: brightness(1);
+    }
+    50% {
+      opacity: 0.3;
+      filter: brightness(0.7) saturate(1.5) hue-rotate(0deg);
+    }
+    100% {
+      opacity: 1;
+      filter: brightness(1);
+    }
+  }
+
+  .blink-red {
+    animation: blink-red 1.5s infinite ease-in-out;
+    color: var(--color-red-400);
   }
 </style>

@@ -3,7 +3,6 @@
     header.header
       .grid.grid-cols-3.items-center
         .text-xs.font-bold.col-span-2 Тренька
-        el-button(@click="store.dispatch('saveState')") сохранить
     main.container
       section.section.editor
         el-collapse(v-model="activePlainEditor", accordion)
@@ -38,9 +37,17 @@
         :workout="store.getters.getWorkoutById(store.state.activeWorkout)"
         @update:model-value="store.commit('setActiveWorkout', $event)"
       )
+
+      exercise-edit-modal(
+        v-if="!!store.state.editedExercise"
+        :model-value="!!store.state.editedExercise"
+        :exercise="store.getters.getExerciseInWorkoutById(store.state.editedExercise)"
+        @update:model-value="store.commit('setEditedExercise', $event)"
+      )
 </template>
 
 <script>
+  import ExerciseEditModal from '~/components/ExerciseEditModal';
   import WorkoutModal from '~/components/WorkoutModal';
   import WorkoutEditor from '~/components/WorkoutEditor';
   import WorkoutList from '~/components/WorkoutList';
@@ -56,7 +63,8 @@
       WorkoutList,
       WorkoutModal,
       ExercisesList,
-      WorkoutEditor
+      WorkoutEditor,
+      ExerciseEditModal
     },
     setup () {
       const drawer = ref(false);

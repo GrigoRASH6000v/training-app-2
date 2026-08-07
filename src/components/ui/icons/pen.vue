@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import IconMixin from '~/mixins/icon';
+  import IconMixin from '~/mixins/icon';
 
-export default {
-  mixins: [IconMixin]
-};
+  export default {
+    mixins: [IconMixin]
+  };
 </script>

@@ -13,7 +13,6 @@
     template(v-if="editedWorkout")
       .field
         .label Название
-
         s-validate(:v="v$.name")
           el-input(v-model="name", placeholder="День 1")
 
@@ -21,6 +20,7 @@
         v-for="(exercise, idx) in exercisesFilteredByReady"
         :key="`exercise-item-${idx}`"
         :item-data="{ index: idx, ...exercise }"
+        @click="$store.commit('setEditedExercise', exercise.exerciseId)"
       )
         el-button(
           round
@@ -116,7 +116,7 @@
   import ExerciseItem from '~/components/ExerciseItem';
   import SValidate from '~/components/ui/SValidate';
   import IconRemove from '~/components/ui/icons/remove';
-  import {ref, computed, toRaw, watch} from 'vue';
+  import { ref, computed, watch } from 'vue';
   import { useVuelidate } from '@vuelidate/core';
   import { required } from '@vuelidate/validators';
 
