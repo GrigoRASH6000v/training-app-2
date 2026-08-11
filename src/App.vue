@@ -3,7 +3,7 @@
     header.header
       .grid.grid-cols-3.items-center
         .text-xs.font-bold.col-span-2 Тренька
-        .text-xs.font-bold.col-span-1.text-right v1.0.2
+        .text-xs.font-bold.col-span-1.text-right v1.1.2
     main.container
       section.section.editor
         el-collapse(v-model="activePlainEditor", accordion)
@@ -32,12 +32,17 @@
           @remove="store.commit('removeWorkout', $event)"
           @edit="store.commit('setEditedWorkout', $event)"
         )
+
+      el-button(@click="weightDiaryModalIsShow = !weightDiaryModalIsShow") Дневник веса
+
       workout-modal(
         v-if="!!store.state.activeWorkout"
         :model-value="!!store.state.activeWorkout"
         :workout="store.getters.getWorkoutById(store.state.activeWorkout)"
         @update:model-value="store.commit('setActiveWorkout', $event)"
       )
+
+      weight-diary-modal(v-model="weightDiaryModalIsShow")
 
       exercise-edit-modal(
         v-if="!!store.state.editedExercise"
@@ -48,6 +53,8 @@
 </template>
 
 <script>
+  import WeightDiaryModal from './components/WeightDiaryModal';
+  import WeightDiary from '~/components/WeightDiary';
   import ExerciseEditModal from '~/components/ExerciseEditModal';
   import WorkoutModal from '~/components/WorkoutModal';
   import WorkoutEditor from '~/components/WorkoutEditor';
@@ -60,18 +67,21 @@
   export default {
     name: 'App',
     components: {
+      WeightDiary,
       PlanEditor,
       WorkoutList,
       WorkoutModal,
       ExercisesList,
       WorkoutEditor,
-      ExerciseEditModal
+      WeightDiaryModal,
+      ExerciseEditModal,
     },
     setup () {
       const drawer = ref(false);
       const activePlainEditor = ref(0);
       const exercisesList = ref(0);
       const store = useStore();
+      const weightDiaryModalIsShow = ref(false);
 
       watch(() => store.state.activeWorkout, newValue => drawer.value = !!newValue);
 
@@ -84,6 +94,7 @@
       const handleTick = () => {};
 
       return {
+        weightDiaryModalIsShow,
         activePlainEditor,
         handlePlanSave,
         exercisesList,

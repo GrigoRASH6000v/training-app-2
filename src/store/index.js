@@ -10,6 +10,7 @@ export default createStore({
     editedWorkout: null,
     editedExercise: null,
     history: [],
+    weightDiary: [],
   },
   getters: {
     getExerciseInWorkoutById: state => id => {
@@ -71,6 +72,18 @@ export default createStore({
     },
     addHistory(state, value) {
       state.history.push(value);
+    },
+    addWeightEntry(state, weight) {
+      state.weightDiary.push({
+        weight,
+        date: Date.now(),
+      });
+    },
+    removeWeightEntry(state, payload) {
+      state.weightDiary = state.weightDiary.filter(entry => entry.date !== payload);
+    },
+    clearWeightDiary(state) {
+      state.weightDiary = [];
     }
   },
   actions: {
