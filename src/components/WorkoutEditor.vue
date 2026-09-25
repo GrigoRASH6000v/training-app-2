@@ -16,19 +16,23 @@
         s-validate(:v="v$.name")
           el-input(v-model="name", placeholder="День 1")
 
-      exercise-item.mb-4(
-        v-for="(exercise, idx) in exercisesFilteredByReady"
-        :key="`exercise-item-${idx}`"
-        :item-data="{ index: idx, ...exercise }"
-        @click="$store.commit('setEditedExercise', exercise.exerciseId)"
-      )
-        el-button(
-          round
-          type="danger"
-          size="small"
-          @click.stop="removeExercise(exercise.exerciseId)"
+      vue-draggable(ref="el" v-model="exercises")
+        exercise-item.mb-4.cursor-pointer(
+          v-for="(exercise, idx) in exercisesFilteredByReady"
+          :key="`exercise-item-${idx}`"
+          :item-data="{ index: idx, ...exercise }"
+          @click="$store.commit('setEditedExercise', exercise.exerciseId)"
         )
-          icon-remove(size="14")
+          template(#before)
+            IconMenu(size="16")
+
+          el-button(
+            round
+            type="danger"
+            size="small"
+            @click.stop="removeExercise(exercise.exerciseId)"
+          )
+            icon-remove(size="14")
 
       div(
         v-for="(exercise, idx) in exercisesFilteredByEdit",
@@ -116,9 +120,11 @@
   import ExerciseItem from '~/components/ExerciseItem';
   import SValidate from '~/components/ui/SValidate';
   import IconRemove from '~/components/ui/icons/remove';
+  import IconMenu from '~/components/ui/icons/menu';
   import { ref, computed, watch } from 'vue';
   import { useVuelidate } from '@vuelidate/core';
   import { required } from '@vuelidate/validators';
+  import { VueDraggable } from 'vue-draggable-plus'
 
   export default {
     name: 'WorkoutEditor',
@@ -126,7 +132,9 @@
       SValidate,
       ExerciseItem,
       IconPlus,
-      IconRemove
+      IconRemove,
+      IconMenu,
+      VueDraggable,
     },
     props: {
       exercisesList: {
@@ -165,7 +173,6 @@
       const currentExercise = computed(() => exercises.value[currentIndex.value] || null);
       const saveTrainBtnIsShow = computed(() => exercises.value.length && !exerciseIsActiveEdit.value);
       const saveExerciseBtnIsShow = computed(() => !!(exerciseIsActiveEdit.value && currentExercise.value && currentExercise.value.exerciseId && currentExercise.value.approache && currentExercise.value.repetition));
-
 
       const saveExercise = () => {
         exercises.value[currentIndex.value].isEdit = false;

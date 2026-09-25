@@ -1,7 +1,10 @@
 <template lang="pug">
   .exercise-item
     el-row
-      el-col(:span="$slots.default ? 14 : 17")
+      el-col(v-if="$slots.before" :span="2")
+        .flex.items-center.h-full
+          slot(name="before")
+      el-col(:span="$slots.default ? $slots.before ? 12 : 14 : $slots.before ? 15 : 17")
         .flex.flex-col
           .text-xs.text-gray-500 Название упр.
           .text-xs {{ store.getters.getExerciseById(itemData.exerciseId)?.title || '' }}
