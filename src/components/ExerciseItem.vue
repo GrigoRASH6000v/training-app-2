@@ -58,6 +58,8 @@
 
 <style lang="scss">
   .exercise-item {
+    user-select: none;
+
     .el-divider--horizontal {
       margin: 12px 0;
     }
