@@ -16,7 +16,13 @@
         s-validate(:v="v$.name")
           el-input(v-model="name", placeholder="День 1")
 
-      vue-draggable(ref="el" v-model="exercises")
+      vue-draggable(
+        ref="el"
+        v-model="exercises"
+        delay="300"
+        drag-class="drag"
+        chosen-class="chosen-item"
+      )
         exercise-item.mb-4.cursor-pointer(
           v-for="(exercise, idx) in exercisesFilteredByReady"
           :key="`exercise-item-${idx}`"
@@ -277,6 +283,10 @@
         margin-left: 0;
         margin-top: 15px;
       }
+    }
+
+    .chosen-item {
+      background-color: #ddd;
     }
   }
 </style>
