@@ -1,128 +1,116 @@
 <template lang="pug">
   .workout-editor
-    .flex.items-center.justify-between
-      .text-xs.font-bold Создать тренировку
-      el-button(
-        v-if="!editedWorkout"
-        size="small"
-        round
-        @click="create"
-      )
-        icon-plus(size="14")
+    .field
+      .label Название
+      s-validate(:v="v$.name")
+        el-input(v-model="name", placeholder="День 1")
 
-    template(v-if="editedWorkout")
+    vue-draggable(
+      ref="el"
+      v-model="exercises"
+      delay="300"
+      drag-class="drag"
+      chosen-class="chosen-item"
+    )
+      exercise-item.mb-4.cursor-pointer(
+        v-for="(exercise, idx) in exercisesFilteredByReady"
+        :key="`exercise-item-${idx}`"
+        :item-data="{ index: idx, ...exercise }"
+        @click="$store.commit('setEditedExercise', exercise.exerciseId)"
+      )
+        template(#before)
+          IconMenu(size="16")
+
+        el-button(
+          round
+          type="danger"
+          size="small"
+          @click.stop="removeExercise(exercise.exerciseId)"
+        )
+          icon-remove(size="14")
+
+    div(
+      v-for="(exercise, idx) in exercisesFilteredByEdit",
+      :key="idx"
+    )
       .field
-        .label Название
-        s-validate(:v="v$.name")
-          el-input(v-model="name", placeholder="День 1")
+        el-select(
+          v-if="exercise.isEdit",
+          v-model="exercise.exerciseId",
+          placeholder="Выбор упражнения"
+        )
+          el-option(
+            v-for="item in exercisesList",
+            :key="item.id",
+            :label="item.title",
+            :value="item.id"
+          )
 
-      vue-draggable(
-        ref="el"
-        v-model="exercises"
-        delay="300"
-        drag-class="drag"
-        chosen-class="chosen-item"
+      .field(
+        v-if="exercise.isEdit ? exercise.exerciseId : true"
       )
-        exercise-item.mb-4.cursor-pointer(
-          v-for="(exercise, idx) in exercisesFilteredByReady"
-          :key="`exercise-item-${idx}`"
-          :item-data="{ index: idx, ...exercise }"
-          @click="$store.commit('setEditedExercise', exercise.exerciseId)"
+        .label Кол-во повторений
+
+        el-select(
+          v-if="exercise.isEdit",
+          v-model="exercise.repetition",
+          placeholder="Выбор повторений"
         )
-          template(#before)
-            IconMenu(size="16")
-
-          el-button(
-            round
-            type="danger"
-            size="small"
-            @click.stop="removeExercise(exercise.exerciseId)"
+          el-option(
+            v-for="(repetition, idxRepetition) in repetitions",
+            :key="idxRepetition",
+            :label="repetition",
+            :value="repetition"
           )
-            icon-remove(size="14")
 
-      div(
-        v-for="(exercise, idx) in exercisesFilteredByEdit",
-        :key="idx"
+      .field(
+        v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetition : true"
       )
-        .field
-          el-select(
-            v-if="exercise.isEdit",
-            v-model="exercise.exerciseId",
-            placeholder="Выбор упражнения"
-          )
-            el-option(
-              v-for="item in exercisesList",
-              :key="item.id",
-              :label="item.title",
-              :value="item.id"
-            )
+        .label Кол-во подходов
 
-        .field(
-          v-if="exercise.isEdit ? exercise.exerciseId : true"
+        el-select(
+          v-if="exercise.isEdit",
+          v-model="exercise.approache",
+          placeholder="Выбор подходов"
         )
-          .label Кол-во повторений
-
-          el-select(
-            v-if="exercise.isEdit",
-            v-model="exercise.repetition",
-            placeholder="Выбор повторений"
+          el-option(
+            v-for="(approache, idxApproaches) in approaches",
+            :key="idxApproaches",
+            :label="approache",
+            :value="approache"
           )
-            el-option(
-              v-for="(repetition, idxRepetition) in repetitions",
-              :key="idxRepetition",
-              :label="repetition",
-              :value="repetition"
-            )
 
-        .field(
-          v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetition : true"
+      .field(
+        v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetition && exercise.approache : true"
+      )
+        .label Время отдыха (в мин)
+
+        el-input-number(
+          v-if="exercise.isEdit",
+          v-model="exercise.restTime",
+          placeholder="Задайте время"
         )
-          .label Кол-во подходов
 
-          el-select(
-            v-if="exercise.isEdit",
-            v-model="exercise.approache",
-            placeholder="Выбор подходов"
-          )
-            el-option(
-              v-for="(approache, idxApproaches) in approaches",
-              :key="idxApproaches",
-              :label="approache",
-              :value="approache"
-            )
+    .flex.flex-col
+      el-button(
+        v-if="!exerciseIsActiveEdit",
+        @click="add"
+      ) Добавить упражнение
 
-        .field(
-          v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetition && exercise.approache : true"
-        )
-          .label Время отдыха (в мин)
+      el-button(
+        v-if="saveExerciseBtnIsShow"
+        type="primary",
+        @click="saveExercise"
+      ) Сохранить упражнение
 
-          el-input-number(
-            v-if="exercise.isEdit",
-            v-model="exercise.restTime",
-            placeholder="Задайте время"
-          )
-
-      .flex.flex-col
-        el-button(
-          v-if="!exerciseIsActiveEdit",
-          @click="add"
-        ) Добавить упражнение
-
-        el-button(
-          v-if="saveExerciseBtnIsShow"
-          type="primary",
-          @click="saveExercise"
-        ) Сохранить упражнение
-
-        el-button(
-          v-if="saveTrainBtnIsShow"
-          type="primary",
-          @click="editedWorkout.id ? updateWorkout() : saveWorkout()"
-        ) {{ editedWorkout.id ? 'Обновить' : 'Сохранить тренировку' }}
+      el-button(
+        v-if="saveTrainBtnIsShow"
+        type="primary",
+        @click="editedWorkout.id ? updateWorkout() : saveWorkout()"
+      ) {{ editedWorkout.id ? 'Обновить' : 'Сохранить тренировку' }}
 </template>
 
 <script>
-  import IconPlus from '~/components/ui/icons/plus';
   import ExerciseItem from '~/components/ExerciseItem';
   import SValidate from '~/components/ui/SValidate';
   import IconRemove from '~/components/ui/icons/remove';
@@ -137,7 +125,6 @@
     components: {
       SValidate,
       ExerciseItem,
-      IconPlus,
       IconRemove,
       IconMenu,
       VueDraggable,

@@ -14,9 +14,7 @@ export default createStore({
   },
   getters: {
     getExerciseInWorkoutById: state => id => {
-      console.log(id, state.editedWorkout)
       if (!state.editedWorkout) return null;
-      console.log(id, state.editedWorkout.exercises)
       return state.editedWorkout.exercises.find(exercise => exercise.exerciseId === id);
     },
     getExerciseById: state => id => {
