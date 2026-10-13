@@ -1,8 +1,9 @@
 <template lang="pug">
   .history-list
+    el-input.mb-4(v-model="search" placeholder="поиск...")
     ul
       li(
-        v-for="(item, key) in items",
+        v-for="(item, key) in filteredItems",
         :key="item.id",
         class="history-list__item"
       )
@@ -20,7 +21,6 @@
 <script>
   import IconRemove from '~/components/ui/icons/remove';
 
-
   export default {
     name: 'ExercisesList',
     components: {
@@ -30,6 +30,21 @@
       items: {
         type: Array,
         default: () => []
+      }
+    },
+    data() {
+      return {
+        search: ''
+      }
+    },
+    computed: {
+      sortedList() {
+        return this.items.sort((a, b) => a.title.localeCompare(b.title));
+      },
+      filteredItems() {
+        const query = this.search.toLowerCase().trim()
+        if (!query) return this.sortedList;
+        return this.sortedList.filter(item => item.title.toLowerCase().includes(query));
       }
     }
   };
