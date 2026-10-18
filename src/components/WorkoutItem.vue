@@ -3,8 +3,8 @@
     el-row
       el-col.mb-4(:span="17")
         .flex.flex-col
-          .text-xs.text-gray-500 Название
-          .text-xs {{ itemData.name }}
+          .text-xs.text-purple-100 Название
+          .text-xs.text-purple-100 {{ itemData.name }}
       el-col(:span="7")
         .flex
           el-button(
@@ -29,7 +29,7 @@
     )
     el-row
       el-col(:span="6")
-        el-button(type="primary", @click="$emit('start', itemData.id)") Начать
+        el-button(type="primary" @click="$emit('start', itemData.id)") Начать
     el-divider
 </template>
 

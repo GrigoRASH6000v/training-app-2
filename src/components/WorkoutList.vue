@@ -1,6 +1,6 @@
 <template lang="pug">
   .workout-list
-    .text-xs.font-bold.mb-2 Список тренировок
+    .text-xs.font-bold.mb-2.text-white Список тренировок
 
     workout-item(
       v-for="(item, index) in modelValue",

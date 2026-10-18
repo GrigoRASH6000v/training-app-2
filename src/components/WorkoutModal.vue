@@ -7,7 +7,7 @@
   )
 
     .workout
-      .bg-white.sticky.top-0.z-4
+      .sticky.top-0.z-4
         .flex.items-center.justify-between
           timer(:initial-seconds="currentTime")
           el-button(
@@ -21,8 +21,8 @@
       el-row.mb-4
         el-col(:span="22")
           .field
-            .text-gray-500 Название
-            .text-sm {{ workout.name }}
+            .text-white Название
+            .text-sm.text-neutral-200 {{ workout.name }}
 
       div(
         v-for="(exercise, idx) in updatedExercises"
@@ -49,9 +49,9 @@
           div.pt-2(v-if="exercise.isActive")
             el-row
               el-col(:span="8")
-                .text-xs.text-gray-500.mb-2 Подход
+                .text-xs.text-neutral-200.mb-2 Подход
               el-col(:span="12")
-                .text-xs.text-gray-500.mb-2 Вес
+                .text-xs.text-neutral-200mb-2 Вес
             div.mb-2(
               v-for="(approache, index) in exercise.approache"
               :key="`approache-${index}`"
@@ -59,7 +59,7 @@
               el-row(:class="{'disabled': !approache.isActive}")
                 el-col(:span="8")
                   .flex.items-center.h-full
-                    .text-xs {{ getOrdinal(index + 1) }}
+                    .text-xs.text-neutral-200 {{ getOrdinal(index + 1) }}
                 el-col(:span="9")
                   el-input-number(
                     v-model="approache.weight"

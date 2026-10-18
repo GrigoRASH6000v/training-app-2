@@ -1,17 +1,21 @@
 <template lang="pug">
   .plan-editor
     .field
-      .label Название
+      .text-white.text-xs.mb-1.text-purple-100 Название
       el-input(v-model="title", placeholder="Например: Присед")
     .field
-      .label Заметки
+      .text-white.text-xs.mb-1.text-purple-100 Заметки
       el-input(
         v-model="notes",
         :rows="3",
         type="textarea",
         placeholder="Дополнительная информация..."
       )
-    el-button(:disabled="!title" @click="save") Сохранить упражнение
+    el-button.mt-auto(
+      :disabled="!title"
+      type="primary"
+      @click="save"
+    ) Сохранить упражнение
 </template>
 
 <script>
@@ -49,6 +53,7 @@
   .plan-editor {
     display: flex;
     flex-direction: column;
+    height: 100%;
     gap: 0.75rem;
   }
   .field {
@@ -56,8 +61,6 @@
     flex-direction: column;
   }
   .label {
-    font-size: 12px;
-    color: #555;
     margin-bottom: 4px;
   }
   input, textarea {
@@ -72,15 +75,9 @@
   }
   button {
     align-self: flex-start;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
-    background: #2d8cff;
-    color: #fff;
     cursor: pointer;
   }
   button:disabled {
-    background: #a0c4ff;
     cursor: not-allowed;
   }
 </style>

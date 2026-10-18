@@ -1,0 +1,29 @@
+.el-button--primary {
+  --grad-pos: 26%;
+  background-image: linear-gradient(90deg, #8D5AFF 0%, #C480FF var(--grad-pos));
+  border: none;
+  color: #fff;
+  transition: background-image 0.3s ease;
+
+  &:hover {
+    --grad-pos: 60%;
+  }
+}
+
+.el-button--small.is-round {
+  padding: 5px;
+}
+
+.el-drawer {
+  background-color: #181236; /* Базовый цвет */
+  background-image: linear-gradient(135deg, #1B082F 0%, #360F59 26%, #381578 51%, #1E0D4F 76%, #0B0417 100%);
+
+  &__close,
+  &__title {
+    color: #fff;
+  }
+  &__close:hover {
+    color: #181236;
+  }
+
+}

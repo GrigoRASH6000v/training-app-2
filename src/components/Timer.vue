@@ -1,6 +1,6 @@
 <template lang="pug">
   .flex.justify-center.items-center
-    .text-2xl.font-bold.mr-4(:class="{'blink-red': timeIsOver}") {{ minutes }} : {{ secondsTwoDigits }}
+    .text-2xl.font-bold.mr-4.text-white(:class="{'blink-red': timeIsOver}") {{ minutes }} : {{ secondsTwoDigits }}
     .controls
       el-button(
         text
@@ -10,7 +10,11 @@
         icon-pause(v-if="running" size="16")
         icon-play(v-else size="16")
 
-      el-button(@click="reset"  size="small") Сброс
+      el-button(
+        type="primary"
+        size="small"
+        @click="reset"
+      ) Сброс
 </template>
 
 <script>
@@ -112,20 +116,6 @@
   .controls {
     display: flex;
     gap: 0.5rem;
-  }
-
-  button {
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: none;
-    background: #2d8cff;
-    color: white;
-    cursor: pointer;
-  }
-
-  button[disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 
   @keyframes blink-red {

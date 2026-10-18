@@ -7,7 +7,7 @@
         :key="item.id",
         class="history-list__item"
       )
-        .text-xs(v-if="item?.title") {{ item.title }}
+        .text-xs.text-purple-100(v-if="item?.title") {{ item.title }}
         el-button(
           class="history-list__item-close",
           size="small",

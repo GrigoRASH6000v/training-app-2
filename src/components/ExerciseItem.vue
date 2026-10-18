@@ -6,20 +6,20 @@
           slot(name="before")
       el-col(:span="$slots.default ? $slots.before ? 12 : 14 : $slots.before ? 15 : 17")
         .flex.flex-col
-          .text-xs.text-gray-500 Название упр.
-          .text-xs {{ store.getters.getExerciseById(itemData.exerciseId)?.title || '' }}
+          .text-xs.text-purple-100 Название упр.
+          .text-xs.text-purple-100 {{ store.getters.getExerciseById(itemData.exerciseId)?.title || '' }}
       el-col(:span="2")
         .flex.flex-col
-          .text-xs.text-gray-500 Пов.
-          .text-xs {{ itemData.repetition }}
+          .text-xs.text-purple-100 Пов.
+          .text-xs.text-purple-100 {{ itemData.repetition }}
       el-col(:span="2")
         .flex.flex-col
-          .text-xs.text-gray-500 Под.
-          .text-xs {{ isArray(itemData.approache) ? itemData.approache.length : itemData.approache }}
+          .text-xs.text-purple-100 Под.
+          .text-xs.text-purple-100 {{ isArray(itemData.approache) ? itemData.approache.length : itemData.approache }}
       el-col(:span="2")
         .flex.flex-col
-          .text-xs.text-gray-500 Отд.
-          .text-xs {{ itemData.restTime }}
+          .text-xs.text-purple-100 Отд.
+          .text-xs.text-purple-100 {{ itemData.restTime }}
       el-col(v-if="$slots.default" :span="4")
         .ml-4
           slot
