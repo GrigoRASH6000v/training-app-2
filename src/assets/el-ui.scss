@@ -1,17 +1,25 @@
-.el-button--primary {
-  --grad-pos: 26%;
-  background-image: linear-gradient(90deg, #8D5AFF 0%, #C480FF var(--grad-pos));
-  border: none;
-  color: #fff;
-  transition: background-image 0.3s ease;
+@use '~/assets/colors.scss' as *;
 
-  &:hover {
-    --grad-pos: 60%;
+.el-button {
+  &.el-button--primary {
+    --grad-pos: 26%;
+    background-image: linear-gradient(90deg, #8D5AFF 0%, #C480FF var(--grad-pos));
+    border: none;
+    color: #fff;
+    transition: background-image 0.3s ease;
+
+    &.is-disabled {
+      background: #868686;
+    }
+
+    &:hover {
+      --grad-pos: 60%;
+    }
   }
-}
 
-.el-button--small.is-round {
-  padding: 5px;
+  .el-button--small.is-round {
+    padding: 5px;
+  }
 }
 
 .el-drawer {
@@ -25,5 +33,43 @@
   &__close:hover {
     color: #181236;
   }
-
 }
+
+.el-input {
+  .el-input__wrapper {
+    background-color: $black-light;
+    box-shadow: none;
+  }
+
+  .el-input__inner {
+    color: #A8ABB2;
+
+    &::placeholder {
+      color: #606266;
+    }
+  }
+}
+
+.el-textarea {
+  .el-textarea__inner {
+    background-color: $black-light;
+    box-shadow: none;
+  }
+}
+
+.el-select {
+  .el-select__wrapper {
+    background-color: $black-light;
+    box-shadow: none;
+  }
+}
+
+.el-input-number {
+  .el-input-number__decrease,
+  .el-input-number__increase {
+    background-color: $black;
+    border-color: $black-light;
+  }
+}
+
+

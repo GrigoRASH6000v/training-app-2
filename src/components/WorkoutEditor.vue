@@ -1,14 +1,94 @@
 <template lang="pug">
-  .workout-editor
-    .field
-      .label Название
+  .h-full.flex.flex-col
+    .field(v-if="!nameIsSave" )
+      .text-xs.t.bg-grayext-gray-500.mb-2 Название
       s-validate(:v="v$.name")
         el-input(v-model="name", placeholder="День 1")
+
+    h1.text-white.text-sm.font-bold.mb-4(v-else) {{ name }}
+
+    .bg-gray.p-4.rounded.rounded-lg(
+      v-for="(exercise, idx) in exercisesFilteredByEdit",
+      :key="idx"
+    )
+      el-select.mb-4(
+        v-if="exercise.isEdit",
+        v-model="exercise.exerciseId",
+        placeholder="Выбор упражнения"
+      )
+        el-option(
+          v-for="item in exercisesList",
+          :key="item.id",
+          :label="item.title",
+          :value="item.id"
+        )
+
+      .flex.gap-4.mb-4
+        .flex.flex-1.flex-col(
+          v-if="exercise.isEdit"
+        )
+          .text-xs.text-gray-500.mb-2.mx-auto.uppercase Подходы
+          el-input-number(
+            v-if="exercise.isEdit"
+            v-model="exercise.repetition"
+            class="!w-full"
+            placeholder="Выбор повторений"
+            :max="30"
+            size="small"
+          )
+
+        .flex.flex-1.flex-col(
+          v-if="exercise.isEdit"
+        )
+          .text-xs.text-gray-500.mb-2.mx-auto.uppercase Повторения
+
+          el-input-number(
+            v-if="exercise.isEdit"
+            v-model="exercise.approache"
+            class="!w-full"
+            placeholder="Выбор подходов"
+            :max="30"
+            size="small"
+          )
+
+        .flex.flex-1.flex-col(v-if="exercise.isEdit")
+          .text-xs.text-gray-500.mb-2.mx-auto.uppercase Отдых, сек
+
+          el-input-number(
+            v-if="exercise.isEdit",
+            v-model="exercise.restTime",
+            class="!w-full"
+            placeholder="Задайте время"
+            size="small"
+          )
+
+      el-button.w-full(
+        :disabled="!saveExerciseBtnIsReady"
+        type="primary"
+        @click="saveExercise"
+      )
+        icon-plus.mr-2(size="14")
+        | Добавить
+
+    .flex.flex-col.mb-4
+      el-button(
+        v-if="!nameIsSave"
+        type="primary"
+        :disabled="!name"
+        @click="createWorkout"
+      )
+        icon-plus(size="14").mr-2
+        | Создать тренировку
+
+      el-button(
+        v-if="nameIsSave && !exerciseIsActiveEdit",
+        @click="add"
+      ) Добавить упражнение
 
     vue-draggable(
       ref="el"
       v-model="exercises"
-      delay="300"
+      delay="200"
       drag-class="drag"
       chosen-class="chosen-item"
     )
@@ -16,105 +96,30 @@
         v-for="(exercise, idx) in exercisesFilteredByReady"
         :key="`exercise-item-${idx}`"
         :item-data="{ index: idx, ...exercise }"
-        @click="$store.commit('setEditedExercise', exercise.exerciseId)"
+        @update="$event => handleUpdateExercise(idx, $event)"
       )
-        template(#before)
-          IconMenu(size="16")
-
         el-button(
+          class="!px-1 !w-5 !h-5 !bg-transparent !border-transparent"
           round
-          type="danger"
           size="small"
           @click.stop="removeExercise(exercise.exerciseId)"
         )
-          icon-remove(size="14")
+          icon-remove(size="14" :color="colors.red['400']")
 
-    div(
-      v-for="(exercise, idx) in exercisesFilteredByEdit",
-      :key="idx"
-    )
-      .field
-        el-select(
-          v-if="exercise.isEdit",
-          v-model="exercise.exerciseId",
-          placeholder="Выбор упражнения"
-        )
-          el-option(
-            v-for="item in exercisesList",
-            :key="item.id",
-            :label="item.title",
-            :value="item.id"
-          )
-
-      .field(
-        v-if="exercise.isEdit ? exercise.exerciseId : true"
-      )
-        .label Кол-во повторений
-
-        el-select(
-          v-if="exercise.isEdit",
-          v-model="exercise.repetition",
-          placeholder="Выбор повторений"
-        )
-          el-option(
-            v-for="(repetition, idxRepetition) in repetitions",
-            :key="idxRepetition",
-            :label="repetition",
-            :value="repetition"
-          )
-
-      .field(
-        v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetition : true"
-      )
-        .label Кол-во подходов
-
-        el-select(
-          v-if="exercise.isEdit",
-          v-model="exercise.approache",
-          placeholder="Выбор подходов"
-        )
-          el-option(
-            v-for="(approache, idxApproaches) in approaches",
-            :key="idxApproaches",
-            :label="approache",
-            :value="approache"
-          )
-
-      .field(
-        v-if="exercise.isEdit ? exercise.exerciseId && exercise.repetition && exercise.approache : true"
-      )
-        .label Время отдыха (в мин)
-
-        el-input-number(
-          v-if="exercise.isEdit",
-          v-model="exercise.restTime",
-          placeholder="Задайте время"
-        )
-
-    .flex.flex-col
-      el-button(
-        v-if="!exerciseIsActiveEdit",
-        @click="add"
-      ) Добавить упражнение
-
-      el-button(
-        v-if="saveExerciseBtnIsShow"
-        type="primary",
-        @click="saveExercise"
-      ) Сохранить упражнение
-
-      el-button(
-        v-if="saveTrainBtnIsShow"
-        type="primary",
-        @click="editedWorkout.id ? updateWorkout() : saveWorkout()"
-      ) {{ editedWorkout.id ? 'Обновить' : 'Сохранить тренировку' }}
+    el-button.sticky.mt-auto(
+      v-if="saveTrainBtnIsShow"
+      type="primary"
+      @click="editedWorkout.id ? updateWorkout() : saveWorkout()"
+    ) {{ editedWorkout.id ? 'Обновить' : 'Сохранить тренировку' }}
 </template>
 
 <script>
   import ExerciseItem from '~/components/ExerciseItem';
   import SValidate from '~/components/ui/SValidate';
   import IconRemove from '~/components/ui/icons/remove';
+  import IconPlus from '~/components/ui/icons/plus';
   import IconMenu from '~/components/ui/icons/menu';
+  import colors from 'tailwindcss/colors';
   import { ref, computed, watch } from 'vue';
   import { useVuelidate } from '@vuelidate/core';
   import { required } from '@vuelidate/validators';
@@ -123,10 +128,11 @@
   export default {
     name: 'WorkoutEditor',
     components: {
-      SValidate,
-      ExerciseItem,
-      IconRemove,
+      IconPlus,
       IconMenu,
+      SValidate,
+      IconRemove,
+      ExerciseItem,
       VueDraggable,
     },
     props: {
@@ -142,12 +148,14 @@
     emits: ['save', 'edited-workout:update', 'update'],
     setup (props, { emit }) {
       let name = ref('');
+      const nameIsSave = ref(false);
+
       const exerciseEmpty = {
         exerciseId: '',
-        approache: '',
-        repetition: '',
+        approache: 3,
+        repetition: 8,
         weight: 0,
-        restTime: 1,
+        restTime: 120,
         isEdit: true
       };
 
@@ -165,11 +173,13 @@
       const currentIndex = computed(() => exercises.value.length - 1);
       const currentExercise = computed(() => exercises.value[currentIndex.value] || null);
       const saveTrainBtnIsShow = computed(() => exercises.value.length && !exerciseIsActiveEdit.value);
-      const saveExerciseBtnIsShow = computed(() => !!(exerciseIsActiveEdit.value && currentExercise.value && currentExercise.value.exerciseId && currentExercise.value.approache && currentExercise.value.repetition));
+      const saveExerciseBtnIsReady = computed(() => !!(exerciseIsActiveEdit.value && currentExercise.value && currentExercise.value.exerciseId && currentExercise.value.approache && currentExercise.value.repetition));
 
       const saveExercise = () => {
         exercises.value[currentIndex.value].isEdit = false;
       }
+
+      const handleUpdateExercise = (index, { name, value }) => exercises.value[index][name] = value;
 
       const reset = () => {
         name.value = '';
@@ -210,25 +220,34 @@
 
       const removeExercise = id => exercises.value = exercises.value.filter(exercise => exercise.exerciseId !== id);
 
+      const createWorkout = () => {
+        nameIsSave.value = true;
+        add();
+      }
+
       watch(() => props.editedWorkout, newValue => newValue && fillData());
 
       return {
-        name,
         add,
+        name,
         create,
+        colors,
         exercises,
+        nameIsSave,
         approaches,
         repetitions,
         saveWorkout,
+        saveExercise,
+        currentIndex,
+        createWorkout,
         updateWorkout,
         removeExercise,
-        currentIndex,
-        saveExercise,
         saveTrainBtnIsShow,
-        saveExerciseBtnIsShow,
-        exercisesFilteredByReady,
-        exercisesFilteredByEdit,
+        handleUpdateExercise,
         exerciseIsActiveEdit,
+        saveExerciseBtnIsReady,
+        exercisesFilteredByEdit,
+        exercisesFilteredByReady,
         v$: useVuelidate(),
       };
     },
@@ -247,33 +266,8 @@
   };
 </script>
 
-<style lang="scss" scoped>
-  .workout-editor {
-    .field {
-      display: flex;
-      flex-direction: column;
-    }
-    .label {
-      font-size: 12px;
-      color: #555;
-      margin-bottom: 4px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 16px;
-    }
-
-    ::v-deep() {
-      .el-button + .el-button {
-        margin-left: 0;
-        margin-top: 15px;
-      }
-    }
-
-    .chosen-item {
-      background-color: #ddd;
-    }
+<style scoped lang="scss">
+  .chosen-item {
+    border-color: #6a7282;
   }
 </style>

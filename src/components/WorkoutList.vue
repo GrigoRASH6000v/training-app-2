@@ -15,7 +15,6 @@
 <script>
   import WorkoutItem from '~/components/WorkoutItem';
   import { useStore } from 'vuex';
-  import { useMq } from 'vue3-mq';
 
   export default {
     name: 'WorkoutList',
@@ -29,11 +28,9 @@
       WorkoutItem
     },
     setup() {
-      const mq = useMq();
       const store = useStore();
       const getExercise = id => store.getters.getExerciseById(id)?.title || '';
       return {
-        mq,
         getExercise
       };
     }

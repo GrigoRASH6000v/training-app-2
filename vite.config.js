@@ -49,5 +49,12 @@ export default defineConfig(({ mode }) => {
         '.mjs'
       ],
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use '~/assets/colors.scss' as *;`,
+        },
+      },
+    },
   }
 })

@@ -23,44 +23,30 @@
               .text-xs.text-gray-500 Название
               .text-xs {{ fullExercise.detail.title }}
 
-        el-row.mb-4
-          el-col(:span="22")
-            .flex.flex-col
-              .text-xs.text-gray-500.mb-2 Кол-во повторений
-              el-select(
-                v-model="repetition",
-                placeholder="Выбор повторений"
-              )
-                el-option(
-                  v-for="(item, idxRepetition) in repetitions",
-                  :key="idxRepetition",
-                  :label="item",
-                  :value="item"
-                )
+        .grid.grid-cols-3.gap-4.mb-8
+          .flex.flex-col
+            .text-xs.text-gray-500.mb-2 Кол-во повторений
+            el-input-number.w-full(
+              v-model="repetition",
+              :min="1"
+              :max="30"
+            )
 
-        el-row.mb-4
-          el-col(:span="22")
-            .flex.flex-col
-              .text-xs.text-gray-500.mb-2 Кол-во подходов
-              el-select(
-                v-model="approache",
-                placeholder="Выбор повторений"
-              )
-                el-option(
-                  v-for="(item, idxRepetition) in approaches",
-                  :key="idxRepetition",
-                  :label="item",
-                  :value="item"
-                )
+          .flex.flex-col
+            .text-xs.text-gray-500.mb-2 Кол-во подходов
+            el-input-number.w-full(
+              v-model="approache",
+              :min="1"
+              :max="30"
+            )
 
-        el-row.mb-8
-          el-col(:span="22")
-            .flex.flex-col
-              .text-xs.text-gray-500.mb-2 Время отдыха (в мин)
-              el-input-number(
-                v-model="restTime",
-                placeholder="Задайте время"
-              )
+          .flex.flex-col
+            .text-xs.text-gray-500.mb-2 Время отдыха (в мин)
+            el-input-number.w-full(
+              v-model="restTime",
+              :min="0"
+              :max="60"
+            )
 
         el-row.mt-auto
           el-col(:span="22")
@@ -73,9 +59,7 @@
 
 <script>
   import IconClose from '~/components/ui/icons/close';
-  import SValidate from '~/components/ui/SValidate';
   import { ElMessageBox } from 'element-plus';
-  import { required } from '@vuelidate/validators';
   import { toRaw, ref } from 'vue';
   import { useVuelidate } from '@vuelidate/core';
   import { ElNotification } from 'element-plus'
@@ -86,7 +70,6 @@
     emits: ['update:model-value'],
     components: {
       IconClose,
-      SValidate
     },
     props: {
       modelValue: {
@@ -103,10 +86,8 @@
       const rawExercise = toRaw(props.exercise);
       const exerciseLocal = structuredClone(rawExercise);
       const fullExercise = { ...exerciseLocal, detail: exerciseLocal ? toRaw(store.getters.getExerciseById(exerciseLocal.exerciseId)) : null };
-      const repetitions = Array.from({ length: 30 }, (_, i) => i + 1);
       const repetition = ref(fullExercise.repetition);
       const approache = ref(fullExercise.approache);
-      const approaches = Array.from({ length: 30 }, (_, i) => i + 1);
       const restTime = ref(fullExercise.restTime);
 
       const v$ = useVuelidate();
@@ -153,19 +134,10 @@
         save,
         restTime,
         approache,
-        approaches,
         repetition,
-        repetitions,
         closeDrawer,
         fullExercise,
       };
-    },
-    validations () {
-      return {
-        approache: { required },
-        repetition: { required },
-        restTime: { required }
-      }
     }
   }
 </script>
