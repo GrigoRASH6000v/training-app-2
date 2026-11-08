@@ -54,8 +54,10 @@
           :class="exerciseStyles(exerciseIdx)"
         )
           el-row
+            el-col.border-b-1.border-lime-500.mb-2(:span="24")
+              .text-xs.text-neutral-200.mb-2 {{ exercise.title }}
             el-col(:span="8")
-              .text-xs.text-neutral-200.mb-2 Подход
+              .text-xs.text-neutral-200.mb-2 Подход!
             el-col(:span="12")
               .text-xs.text-neutral-200mb-2 Вес
           .mb-2(

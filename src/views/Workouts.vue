@@ -110,6 +110,7 @@
           timer: 0,
           exercises: fullWorkout.exercises.map((exercise, idx) => ({
             ...exercise,
+            title: store.getters.getExerciseById(exercise.exerciseId)?.title || '',
             isActive: idx === 0,
             isComplete: false,
             approache: Array(exercise.approache).fill(null).map((_, index) => ({
