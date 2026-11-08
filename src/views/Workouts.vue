@@ -20,7 +20,7 @@
       v-model="store.state.workouts"
       @start="setActiveWorkout"
       @remove="store.commit('removeWorkout', $event)"
-      @edit="store.commit('setEditedWorkout', $event)"
+      @edit="editWorkout"
     )
 
   section.section(v-else)
@@ -51,6 +51,7 @@
     workout-editor(
       :exercises-list="store.state.exercises"
       :edited-workout="store.state.editedWorkout"
+      :is-edit="workoutIsEdit"
       @edited-workout:update="store.commit('setEditedWorkout', $event)"
       @save="store.commit('addWorkout', $event)"
       @update="store.commit('updateWorkout', $event)"
@@ -84,6 +85,7 @@
       const store = useStore();
       const exercisesList = ref(false);
       const workoutModalIsShow = ref(false);
+      const workoutIsEdit = ref(false);
 
       store.dispatch('initializeStore');
 
@@ -94,6 +96,12 @@
           exercises: []
         });
       };
+
+      const editWorkout = (v) => {
+        console.log()
+        workoutIsEdit.value = true;
+        store.commit('setEditedWorkout', v);
+      }
 
       const setActiveWorkout = workoutId => {
         const fullWorkout = store.getters.getWorkoutById(workoutId);
@@ -130,11 +138,17 @@
         if (newValue) workoutModalIsShow.value = true;
       }, { immediate: true });
 
+      watch(() => store.state.editedWorkout, (v) => {
+        if (!v) workoutIsEdit.value = false;
+      });
+
       return {
         workoutModalIsShow,
-        exercisesList,
         createNewWorkout,
         setActiveWorkout,
+        exercisesList,
+        workoutIsEdit,
+        editWorkout,
         colors,
         store,
         mq

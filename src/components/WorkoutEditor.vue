@@ -98,6 +98,7 @@
         v-for="(exercise, idx) in exercisesFilteredByReady"
         :key="`exercise-item-${idx}`"
         :item-data="{ index: idx, ...exercise }"
+        :is-edited="isEdit"
         @update="$event => handleUpdateExercise(idx, $event)"
       )
         el-button(
@@ -145,6 +146,10 @@
       editedWorkout: {
         type: Object,
         default: () => ({})
+      },
+      isEdit: {
+        type: Boolean,
+        default: false
       }
     },
     emits: ['save', 'edited-workout:update', 'update'],
