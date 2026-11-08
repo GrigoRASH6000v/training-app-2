@@ -1,6 +1,6 @@
 <template lang="pug">
   .exercise-item
-    el-row.mb-2
+    el-row.mb-2(v-if="isEdited")
       el-col(:span="24")
         icon-menu.mx-auto(size="16")
     el-row.gap-1.mb-4
@@ -8,34 +8,20 @@
         class="!flex"
         :span="2"
       )
-        .text-xs.text-gray-500 {{ itemData.index + 1 }}
+        .text-xs.text-gray-300 {{ itemData.index + 1 }}
       el-col.flex.items-center(
         :span="19"
         class="!flex"
       )
-        .text-xs.text-gray-500 {{ store.getters.getExerciseById(itemData.exerciseId)?.title || '' }}
+        .text-xs.text-gray-300 {{ store.getters.getExerciseById(itemData.exerciseId)?.title || '' }}
       el-col.items-center(:span="2" class="!flex")
         .ml-auto.flex.items-center
           slot
 
-    el-row(v-if="isEdited" )
-      el-col(:span="8")
-        .flex.flex-col
-          .text-xs.uppercase.text-gray-500.mb-2 Подходы
-          .text-xs.text-gray-500 {{ itemData.repetition }}
-      el-col(:span="8")
-        .flex.flex-col
-          .text-xs.uppercase.text-gray-500.mb-2 Повторения
-          .text-xs.text-gray-500 {{ isArray(itemData.approache) ? itemData.approache.length : itemData.approache }}
-      el-col(:span="8")
-        .flex.flex-col
-          .text-xs.uppercase.text-gray-500.mb-2 Отдых, сек
-          .text-xs.text-gray-500 {{ itemData.restTime }}
-
-    el-row(v-else)
+    el-row(v-if="isEdited")
       el-col(:span="8")
         .flex.flex-col.px-2
-          .text-xs.uppercase.text-gray-500.mx-auto.mb-2 Подходы
+          .text-xs.uppercase.text-gray-300.mx-auto.mb-2 Подходы
           el-input-number(
             :model-value="itemData.repetition"
             class="!w-full"
@@ -46,7 +32,7 @@
           )
       el-col(:span="8")
         .flex.flex-col.px-2
-          .text-xs.uppercase.text-gray-500.mx-auto.mb-2 Повторения
+          .text-xs.uppercase.text-gray-300.mx-auto.mb-2 Повторения
           el-input-number(
             :model-value="itemData.approache"
             class="!w-full"
@@ -57,7 +43,7 @@
           )
       el-col(:span="8")
         .flex.flex-col.px-2
-          .text-xs.uppercase.text-gray-500.mx-auto.mb-2 Отдых, сек
+          .text-xs.uppercase.text-gray-300.mx-auto.mb-2 Отдых, сек
           el-input-number(
             :model-value="itemData.restTime"
             class="!w-full"
@@ -65,6 +51,20 @@
             size="small"
             @update:model-value="value => $emit('update', { name: 'restTime', value })"
           )
+
+    el-row(v-else)
+      el-col(:span="8")
+        .flex.flex-col
+          .text-xs.uppercase.text-gray-300.mb-2 Подходы
+          .text-xs.text-gray-300 {{ itemData.repetition }}
+      el-col(:span="8")
+        .flex.flex-col
+          .text-xs.uppercase.text-gray-300.mb-2 Повторения
+          .text-xs.text-gray-300 {{ isArray(itemData.approache) ? itemData.approache.length : itemData.approache }}
+      el-col(:span="8")
+        .flex.flex-col
+          .text-xs.uppercase.text-gray-300.mb-2 Отдых, сек
+          .text-xs.text-gray-300 {{ itemData.restTime }}
 
     el-divider(v-if="divider")
 </template>
@@ -91,15 +91,17 @@
       divider: {
         type: Boolean,
         default: false
+      },
+      isEdited: {
+        type: Boolean,
+        default: false
       }
     },
     setup() {
       const store = useStore();
-      const isEdited = ref(false);
       return {
         store,
         isArray,
-        isEdited
       };
     }
   }
@@ -111,7 +113,12 @@
     background-color: $black;
     padding: 16px;
     border-radius: 8px;
-    border: 1px solid transparent;
+    border: 1px solid $black-light;
+    margin-bottom: 20px;
+
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
 
     .el-divider--horizontal {
       margin: 12px 0;

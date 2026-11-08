@@ -13,24 +13,25 @@
       )
         icon-plus(size="14")
 
-  section.section
+  template(v-if="store.state.workouts.length")
+    h2.text-white.text-sm.font-bold Список тренировок
+
     workout-list(
       v-model="store.state.workouts"
-      @start="store.commit('setActiveWorkout', $event)"
+      @start="setActiveWorkout"
       @remove="store.commit('removeWorkout', $event)"
       @edit="store.commit('setEditedWorkout', $event)"
     )
 
-  el-button(type="primary" @click="weightDiaryModalIsShow = !weightDiaryModalIsShow") Дневник веса
+  section.section(v-else)
+    icon-clipboard.mb-2.mx-auto(size="24" :color="colors.gray[500]")
+    p.text-gray-500.text-center Нет ни одной тренировки — создайте первую выше
 
   workout-modal(
-    v-if="!!store.state.activeWorkout"
+    v-if="workoutModalIsShow"
     :model-value="!!store.state.activeWorkout"
-    :workout="store.getters.getWorkoutById(store.state.activeWorkout)"
-    @update:model-value="store.commit('setActiveWorkout', $event)"
+    @close="workoutModalIsShow = false"
   )
-
-  weight-diary-modal(v-model="weightDiaryModalIsShow")
 
   exercise-edit-modal(
     v-if="!!store.state.editedExercise"
@@ -57,15 +58,16 @@
 </template>
 
 <script>
-  import WeightDiaryModal from '~/components/WeightDiaryModal';
   import ExerciseEditModal from '~/components/ExerciseEditModal';
   import WorkoutModal from '~/components/WorkoutModal';
   import WorkoutEditor from '~/components/WorkoutEditor';
   import WorkoutList from '~/components/WorkoutList';
   import IconPlus from '~/components/ui/icons/plus';
+  import IconClipboard from '~/components/ui/icons/clipboard';
+  import colors from 'tailwindcss/colors';
   import { useMq } from 'vue3-mq';
   import { useStore } from 'vuex';
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
 
   export default {
     name: 'WorkoutsView',
@@ -73,15 +75,15 @@
       IconPlus,
       WorkoutList,
       WorkoutModal,
+      IconClipboard,
       WorkoutEditor,
-      WeightDiaryModal,
       ExerciseEditModal,
     },
     setup () {
       const mq = useMq();
       const store = useStore();
-      const weightDiaryModalIsShow = ref(false);
       const exercisesList = ref(false);
+      const workoutModalIsShow = ref(false);
 
       store.dispatch('initializeStore');
 
@@ -91,12 +93,48 @@
           name: '',
           exercises: []
         });
+      };
+
+      const setActiveWorkout = workoutId => {
+        const fullWorkout = store.getters.getWorkoutById(workoutId);
+        const lastIdenticalWorkout = store.state.history.reverse().find(el => el.workoutId === workoutId) || null;
+
+        const getTrend = (exerciseIdx, approacheIndex, weight) => {
+          return lastIdenticalWorkout ? weight - lastIdenticalWorkout.exercises[exerciseIdx]?.approache?.[approacheIndex]?.weight || 0 : 0 ;
+        };
+
+        const getWeight = (exercise, approacheIndex) => lastIdenticalWorkout ? lastIdenticalWorkout.exercises.find(el => el.exerciseId === exercise.exerciseId)?.approache?.[approacheIndex]?.weight || 0 : 0;
+
+        const updatedWorkout = {
+          ...fullWorkout,
+          timer: 0,
+          exercises: fullWorkout.exercises.map((exercise, idx) => ({
+            ...exercise,
+            isActive: idx === 0,
+            isComplete: false,
+            approache: Array(exercise.approache).fill(null).map((_, index) => ({
+              weight: getWeight(exercise, index),
+              trend: getTrend(exercise, index),
+              isActive: idx === 0 && index === 0,
+              isComplete: false,
+              isChanged: false
+            }))
+          }))
+        };
+
+        store.commit('setActiveWorkout', updatedWorkout);
       }
 
+      watch(() => !!store.state.activeWorkout, newValue => {
+        if (newValue) workoutModalIsShow.value = true;
+      }, { immediate: true });
+
       return {
-        weightDiaryModalIsShow,
+        workoutModalIsShow,
         exercisesList,
         createNewWorkout,
+        setActiveWorkout,
+        colors,
         store,
         mq
       };

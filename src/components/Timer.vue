@@ -1,140 +1,166 @@
 <template lang="pug">
-  .flex.justify-center.items-center
-    .text-2xl.font-bold.mr-4.text-white(:class="{'blink-red': timeIsOver}") {{ minutes }} : {{ secondsTwoDigits }}
-    .controls
-      el-button(
-        text
-        size="small"
-        @click="running ? pause() : start()"
+  .timer-container
+    svg.timer-ring(
+      viewBox="0 0 120 120"
+      :style="styles"
+    )
+      circle(
+        class="ring-bg"
+        cx="60"
+        cy="60"
+        r="54"
+        fill="none"
+        stroke-width="6"
       )
-        icon-pause(v-if="running" size="16")
-        icon-play(v-else size="16")
-
-      el-button(
-        type="primary"
-        size="small"
-        @click="reset"
-      ) Сброс
+      circle(
+        class="ring-progress"
+        cx="60"
+        cy="60"
+        r="54"
+        fill="none"
+        stroke-width="6"
+        :stroke-dasharray="circumference"
+        :stroke-dashoffset="dashOffset"
+      )
+    .timer-content
+      template(v-if="total > 0")
+        .text-2xl.font-bold.text-lime-500 {{ displaySeconds }}
+      template(v-else)
+        .text-xl.font-bold.timer-finished ЕБАШЬ!
 </template>
 
 <script>
-  import IconPlay from '~/components/ui/icons/play';
-  import IconPause from '~/components/ui/icons/pause';
-  import {
-    ref,
-    computed,
-    onUnmounted,
-    watch
-  } from 'vue';
+  import { ref, computed, watch, onUnmounted } from 'vue';
+
+  const RADIUS = 54;
+  const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
   export default {
     name: 'Timer',
-    components: {
-      IconPlay,
-      IconPause
-    },
     props: {
       initialSeconds: {
         type: Number,
         default: 60
+      },
+      size: {
+        type: [Number, String],
+        default: 120
       }
     },
-    emits: ['tick'],
-    setup(props) {
-      const total = ref(0);
-      const running = ref(false);
-      const timeIsOver = ref(false);
+    emits: ['finish'],
+    setup(props, { emit }) {
+      const total = ref(props.initialSeconds);
       let timer = null;
 
-      const minutes = computed(() => Math.floor(total.value / 60));
-      const seconds = computed(() => total.value % 60);
-      const secondsTwoDigits = computed(() => String(seconds.value).padStart(2, '0'));
+      const circumference = CIRCUMFERENCE;
+      const dashOffset = computed(() => {
+        const progress = total.value / props.initialSeconds;
+        return circumference * (1 - progress);
+      });
 
-      watch(() => props.initialSeconds, value => {
-        total.value = value;
-
-      }, { immediate: true })
+      const displaySeconds = computed(() => {
+        return String(Math.max(0, total.value)).padStart(2, '0');
+      });
 
       const tick = () => {
-        if (total.value !== 0) {
+        if (total.value > 0) {
           total.value -= 1;
         } else {
-          clearInterval(timer)
-          timeIsOver.value = true;
+          clearInterval(timer);
+          timer = null;
+          emit('finish');
         }
-
       };
+
+      const isFinished = computed(() => total.value <= 0);
 
       const start = () => {
         if (timer) return;
-        running.value = true;
         timer = setInterval(tick, 1000);
       };
 
-      const pause = () => {
-        if (timer) {
-          clearInterval(timer);
-          timer = null;
-        }
-        running.value = false;
+      const reset = (seconds) => {
+        clearInterval(timer);
+        timer = null;
+        total.value = seconds;
+        start();
       };
 
-      const reset = () => {
-        pause();
-        total.value = props.initialSeconds;
-        timeIsOver.value = false;
-      };
+      watch(() => props.initialSeconds, (val) => {
+        reset(val);
+      }, { immediate: true });
 
       onUnmounted(() => {
         if (timer) clearInterval(timer);
       });
 
-      // реактивность на изменение initialSeconds
-      watch(() => props.initialSeconds, (n) => {
-        total.value = n;
-      });
+      const containerSize = () => {
+        const s = typeof props.size === 'number' ? props.size : parseInt(props.size) || 120;
+        return `${s}px`;
+      };
 
-      return {minutes, secondsTwoDigits, running, timeIsOver, start, pause, reset};
+      const styles = computed(() => ({
+        width: containerSize(),
+        height: containerSize(),
+        transform: 'rotate(-90deg)'
+      }));
+
+      return {
+        total,
+        circumference,
+        dashOffset,
+        displaySeconds,
+        styles,
+        isFinished,
+      };
     }
   };
 </script>
 
-<style scoped>
-  .timer {
+<style scoped lang="scss">
+  .timer-container {
+    position: relative;
+  }
+
+  .timer-ring {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ring-bg {
+    stroke: rgba(255, 255, 255, 0.1);
+  }
+
+  .ring-progress {
+    stroke: #fff;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  .timer-content {
+    position: absolute;
+    top: 0;
+    left: 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
   }
 
-  .display {
-    font-size: 48px;
-    font-weight: bold;
-    letter-spacing: 2px;
+  .timer-finished {
+    animation: timer-blink 1s infinite ease-in-out;
+    color: var(--color-red-500);
   }
 
-  .controls {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  @keyframes blink-red {
-    0% {
+  @keyframes timer-blink {
+    0%, 100% {
       opacity: 1;
-      filter: brightness(1);
+      transform: scale(1);
     }
     50% {
       opacity: 0.3;
-      filter: brightness(0.7) saturate(1.5) hue-rotate(0deg);
+      transform: scale(1.1);
     }
-    100% {
-      opacity: 1;
-      filter: brightness(1);
-    }
-  }
-
-  .blink-red {
-    animation: blink-red 1.5s infinite ease-in-out;
-    color: var(--color-red-400);
   }
 </style>

@@ -35,41 +35,4 @@
   }
 }
 
-.el-input {
-  .el-input__wrapper {
-    background-color: $black-light;
-    box-shadow: none;
-  }
-
-  .el-input__inner {
-    color: #A8ABB2;
-
-    &::placeholder {
-      color: #606266;
-    }
-  }
-}
-
-.el-textarea {
-  .el-textarea__inner {
-    background-color: $black-light;
-    box-shadow: none;
-  }
-}
-
-.el-select {
-  .el-select__wrapper {
-    background-color: $black-light;
-    box-shadow: none;
-  }
-}
-
-.el-input-number {
-  .el-input-number__decrease,
-  .el-input-number__increase {
-    background-color: $black;
-    border-color: $black-light;
-  }
-}
-
 

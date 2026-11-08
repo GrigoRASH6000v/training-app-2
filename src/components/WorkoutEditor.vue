@@ -83,7 +83,9 @@
       el-button(
         v-if="nameIsSave && !exerciseIsActiveEdit",
         @click="add"
-      ) Добавить упражнение
+      )
+        icon-plus.mr-2(size="14")
+        | Добавить упражнение
 
     vue-draggable(
       ref="el"

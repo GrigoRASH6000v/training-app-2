@@ -29,12 +29,13 @@
     )
     el-row
       el-col(:span="6")
-        el-button(type="primary" @click="$emit('start', itemData.id)") Начать
-    el-divider
+        el-button(type="primary" @click="$emit('start', itemData.id)")
+          icon-play(size="14")
 </template>
 
 <script>
   import IconPen from '~/components/ui/icons/pen';
+  import IconPlay from '~/components/ui/icons/play';
   import IconRemove from '~/components/ui/icons/remove';
   import ExerciseItem from '~/components/ExerciseItem';
   import { ElMessageBox } from 'element-plus';
@@ -42,6 +43,7 @@
   export default {
     components: {
       IconPen,
+      IconPlay,
       ExerciseItem,
       IconRemove
     },
@@ -75,6 +77,14 @@
 
 <style lang="scss" scoped>
   .workout-item {
+    padding: 16px;
+    background-color: $black;
+    border-radius: 8px;
+
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+
     .field {
       display: flex;
       flex-direction: column;
