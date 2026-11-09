@@ -53,9 +53,6 @@
 
 <style scoped lang="scss">
   .bottom-nav {
-    position: sticky;
-    bottom: 0;
-    left: 0;
     max-width: 400px;
     width: 100%;
     margin: 0 auto;
@@ -63,7 +60,6 @@
     justify-content: space-around;
     align-items: center;
     padding: 0.5rem 0;
-    z-index: 50;
     border-radius: 8px;
     background-color: $black;
   }

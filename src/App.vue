@@ -34,6 +34,9 @@
   body {
     margin: 0;
     padding: 0;
+    overflow: hidden;
+    height: 100dvh;
+    overscroll-behavior: none;
   }
 
   section {
@@ -61,5 +64,6 @@
     margin: 0 auto;
     overflow-y: auto;
     align-content: start;
+    min-height: 0;
   }
 </style>
