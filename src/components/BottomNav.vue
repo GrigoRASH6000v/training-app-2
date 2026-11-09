@@ -41,7 +41,6 @@
       const route = useRoute();
       const isActive = (path) => route.path === path;
       const items = computed(() => [
-        { path: '/', label: 'Главная', icon: 'IconHome', isActive: isActive('/') },
         { path: '/exercises', label: 'Упражнения', icon: 'IconSquarePen', isActive: isActive('/exercises') },
         { path: '/workouts', label: 'Тренировки', icon: 'IconSettings', isActive: isActive('/workouts') },
         { path: '/diary', label: 'Дневник', icon: 'IconSave', isActive: isActive('/diary') },
