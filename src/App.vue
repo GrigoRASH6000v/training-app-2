@@ -3,7 +3,7 @@
     header.header.border-neutral-500.border-b.border-b-1
       .grid.grid-cols-3.items-center
         .text-xs.font-bold.col-span-2.text-white Тренька
-        .text-xs.font-bold.col-span-1.text-right.text-white v1.2
+        .text-xs.font-bold.col-span-1.text-right.text-white v1.2.1
     main.container
       router-view
 
@@ -27,7 +27,7 @@
     color: #333;
     background-color: #181236;
     background-image: linear-gradient(135deg, #1B082F 0%, #360F59 26%, #381578 51%, #1E0D4F 76%, #0B0417 100%);
-    min-height: 100dvh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
   }

@@ -7,8 +7,7 @@ import Diary from '~/views/Diary';
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: Home
+    redirect: '/workouts'
   },
   {
     path: '/exercises',
