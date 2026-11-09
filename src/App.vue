@@ -1,13 +1,12 @@
 <template lang="pug">
-  .app
-    header.header.border-neutral-500.border-b.border-b-1
-      .grid.grid-cols-3.items-center
-        .text-xs.font-bold.col-span-2.text-white Тренька
-        .text-xs.font-bold.col-span-1.text-right.text-white v1.2.1
-    main.container
-      router-view
+  header.header.border-neutral-500.border-b.border-b-1
+    .grid.grid-cols-3.items-center
+      .text-xs.font-bold.col-span-2.text-white Тренька
+      .text-xs.font-bold.col-span-1.text-right.text-white v1.2.2
+  main.container
+    router-view
 
-    bottom-nav.nav
+  bottom-nav(class="!mt-auto")
 </template>
 
 <script>
@@ -22,7 +21,7 @@
 </script>
 
 <style>
-  .app {
+  #app {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     color: #333;
     background-color: #181236;
@@ -60,12 +59,7 @@
     padding: 1rem;
     max-width: 400px;
     margin: 0 auto;
-    height: calc(100dvh - 125px);
     overflow-y: auto;
     align-content: start;
-  }
-
-  .nav {
-    margin-top: auto;
   }
 </style>
