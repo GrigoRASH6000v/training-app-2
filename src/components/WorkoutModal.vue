@@ -1,8 +1,8 @@
 <template lang="pug">
   el-drawer(
-    :model-value="modelValue",
+    :model-value="modelValue"
     :with-header="false"
-    size="100%",
+    size="100%"
   )
 
     .h-full.flex.flex-col.gap-4(v-if="workout")
@@ -237,7 +237,6 @@
       ]);
 
       const finishWorkout = () => {
-        console.log(workoutProgress)
         ElMessageBox.confirm(
           workoutProgress.value === 100 ? 'Все подходы выполнены — отличный результат!' : 'Не все упражнения выполнены',
           'Завершить тренировку?',

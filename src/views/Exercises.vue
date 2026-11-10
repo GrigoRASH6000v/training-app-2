@@ -37,8 +37,6 @@
       const searchQuery = ref('');
       const store = useStore();
 
-      store.dispatch('initializeStore');
-
       const filteredExercises = computed(() => {
         if (!searchQuery.value) return store.state.exercises;
         const query = searchQuery.value.toLowerCase();

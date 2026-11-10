@@ -11,12 +11,17 @@
 
 <script>
   import BottomNav from '~/components/BottomNav';
+  import { useStore } from 'vuex';
 
   export default {
     name: 'App',
     components: {
       BottomNav,
     },
+    setup() {
+      const store = useStore();
+      store.dispatch('initializeStore');
+    }
   };
 </script>
 

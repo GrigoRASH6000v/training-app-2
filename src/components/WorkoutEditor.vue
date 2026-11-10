@@ -72,7 +72,7 @@
 
     .flex.flex-col.mb-4
       el-button(
-        v-if="!nameIsSave"
+        v-if="!nameIsSave && !isEdit"
         type="primary"
         :disabled="!name"
         @click="createWorkout"
@@ -232,7 +232,7 @@
         add();
       }
 
-      watch(() => props.editedWorkout, newValue => newValue && fillData());
+      watch(() => props.editedWorkout, newValue => newValue && fillData(), { immediate: true });
 
       return {
         add,
