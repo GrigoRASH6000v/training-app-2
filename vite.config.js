@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => {
               label: 'Главный экран приложения',
             },
           ],
-          start_url: '/',
+          start_url: '/training-app-2/',
           display: 'standalone',
           background_color: '#ffffff'
         }
