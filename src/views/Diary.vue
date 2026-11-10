@@ -72,7 +72,7 @@
       const entries = computed(() => store.state.weightDiary || []);
 
       const sortedEntries = computed(() => {
-        return [...entries.value].sort((a, b) => new Date(a.date) - new Date(b.date));
+        return [...entries.value].sort((a, b) => new Date(b.date) - new Date(a.date));
       });
 
       const chartOptions = {
