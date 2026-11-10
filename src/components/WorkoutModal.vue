@@ -57,7 +57,7 @@
             el-col.border-b-1.border-lime-500.mb-2(:span="24")
               .text-xs.text-neutral-200.mb-2 {{ exercise.title }}
             el-col(:span="8")
-              .text-xs.text-neutral-200.mb-2 Подход!
+              .text-xs.text-neutral-200.mb-2 Подход
             el-col(:span="12")
               .text-xs.text-neutral-200mb-2 Вес
           .mb-2(
@@ -233,7 +233,7 @@
 
       const exerciseStyles = idx => ([
         { 'mb-4': idx !== workout.exercises.length - 1 },
-        workout.exercises[idx].isActive ? 'border-lime-500' : 'opacity-50 pointer-events-none border-transparent'
+        workout.exercises[idx].isActive ? 'border-lime-500 exercise-is-active' : 'opacity-50 pointer-events-none border-transparent'
       ]);
 
       const finishWorkout = () => {
