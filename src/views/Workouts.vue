@@ -87,8 +87,6 @@
       const workoutModalIsShow = ref(false);
       const workoutIsEdit = ref(false);
 
-      store.dispatch('initializeStore');
-
       const createNewWorkout = () => {
         store.commit('setEditedWorkout', {
           id: null,
@@ -98,7 +96,6 @@
       };
 
       const editWorkout = (v) => {
-        console.log()
         workoutIsEdit.value = true;
         store.commit('setEditedWorkout', v);
       }

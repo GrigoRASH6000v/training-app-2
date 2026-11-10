@@ -1,7 +1,6 @@
 import { createStore } from 'vuex';
 import { saveAs } from 'file-saver';
 import vuexState from './vuex-state.json';
-import { getField, updateField } from 'vuex-map-fields';
 
 export default createStore({
   state: {
@@ -14,7 +13,6 @@ export default createStore({
     weightDiary: [],
   },
   getters: {
-    getField,
     getExerciseInWorkoutById: state => id => {
       if (!state.editedWorkout) return null;
       return state.editedWorkout.exercises.find(exercise => exercise.exerciseId === id);
@@ -29,7 +27,6 @@ export default createStore({
     }
   },
   mutations: {
-    updateField,
     updateExerciseInWorkout(state, { workoutId, exerciseId, updates }) {
       const workoutIndex = state.workouts.findIndex(workout => workout.id === workoutId);
       if (~workoutIndex) {
@@ -75,10 +72,7 @@ export default createStore({
       state.history.push(value);
     },
     addWeightEntry(state, weight) {
-      state.weightDiary.push({
-        weight,
-        date: Date.now(),
-      });
+      state.weightDiary.push(weight);
     },
     removeWeightEntry(state, payload) {
       state.weightDiary = state.weightDiary.filter(entry => entry.date !== payload);
