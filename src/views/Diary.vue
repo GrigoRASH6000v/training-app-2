@@ -101,7 +101,7 @@
           labels: sortedEntries.value.map(entry => formatDate(new Date(entry.date))),
           datasets: [{
             label: 'Вес (кг)',
-            data: sortedEntries.value.map(entry => entry.weight),
+            data: entries.value.map(entry => entry.weight),
             borderColor: '#fff',
             backgroundColor: 'rgba(255, 255, 255, 0.1)',
             borderWidth: 2,
