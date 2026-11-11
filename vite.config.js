@@ -20,9 +20,9 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
         manifest: {
-          name: 'Ваше приложение',
-          short_name: 'Приложение',
-          description: 'Описание приложения',
+          name: 'Тренька',
+          short_name: 'Тренька',
+          description: 'Приложение для ведения дневника тренировок',
           theme_color: '#ffffff',
           icons: [
             { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },

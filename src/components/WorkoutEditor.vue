@@ -1,7 +1,7 @@
 <template lang="pug">
   .h-full.flex.flex-col
     .field(v-if="!nameIsSave" )
-      .text-xs.t.bg-grayext-gray-500.mb-2 Название
+      .text-xs.text-gray-500.mb-2 Название
       s-validate(:v="v$.name")
         el-input(v-model="name", placeholder="День 1")
 
