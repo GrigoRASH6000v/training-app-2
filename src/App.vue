@@ -2,7 +2,7 @@
   header.header.border-neutral-500.border-b.border-b-1
     .grid.grid-cols-3.items-center
       .text-xs.font-bold.col-span-2.text-white Тренька
-      .text-xs.font-bold.col-span-1.text-right.text-white v1.2.8
+      .text-xs.font-bold.col-span-1.text-right.text-white v1.2.9
   main.container
     router-view
 
