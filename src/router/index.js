@@ -3,6 +3,7 @@ import Home from '~/views/Home';
 import Exercises from '~/views/Exercises';
 import Workouts from '~/views/Workouts';
 import Diary from '~/views/Diary';
+import Settings from '~/views/Settings';
 
 const routes = [
   {
@@ -23,6 +24,11 @@ const routes = [
     path: '/diary',
     name: 'diary',
     component: Diary
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: Settings
   },
 ];
 

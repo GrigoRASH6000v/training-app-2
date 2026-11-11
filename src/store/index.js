@@ -27,6 +27,11 @@ export default createStore({
     }
   },
   mutations: {
+    loadState(state, payload) {
+      Object.keys(payload).forEach(key => {
+        if (state[key] !== undefined) state[key] = payload[key];
+      })
+    },
     updateExerciseInWorkout(state, { workoutId, exerciseId, updates }) {
       const workoutIndex = state.workouts.findIndex(workout => workout.id === workoutId);
       if (~workoutIndex) {
@@ -116,6 +121,11 @@ export default createStore({
       } catch (e) {
         console.warn(e);
       }
+    },
+    loadState({ state }, data) {
+      this.replaceState(
+        Object.assign(state, data)
+      );
     }
   },
   modules: {

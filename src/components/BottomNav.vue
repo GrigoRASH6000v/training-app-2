@@ -22,6 +22,7 @@
   import IconSave from '~/components/ui/icons/save';
   import IconHome from '~/components/ui/icons/home';
   import IconSquarePen from '~/components/ui/icons/square-pen';
+  import IconClipboard from '~/components/ui/icons/clipboard';
   import colors from 'tailwindcss/colors';
   import { useRoute } from 'vue-router';
   import { computed } from 'vue';
@@ -36,14 +37,16 @@
       IconHome,
       IconSettings,
       IconSquarePen,
+      IconClipboard,
     },
     setup() {
       const route = useRoute();
       const isActive = (path) => route.path === path;
       const items = computed(() => [
         { path: '/exercises', label: 'Упражнения', icon: 'IconSquarePen', isActive: isActive('/exercises') },
-        { path: '/workouts', label: 'Тренировки', icon: 'IconSettings', isActive: isActive('/workouts') },
+        { path: '/workouts', label: 'Тренировки', icon: 'IconClipboard', isActive: isActive('/workouts') },
         { path: '/diary', label: 'Дневник', icon: 'IconSave', isActive: isActive('/diary') },
+        { path: '/settings', label: 'Настройки', icon: 'IconSettings', isActive: isActive('/settings') },
       ]);
 
       return { items, isActive, colors };
