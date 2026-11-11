@@ -49,6 +49,7 @@
     @update:model-value="store.commit('setEditedWorkout', null)"
   )
     workout-editor(
+      v-if="!!store.state.editedWorkout"
       :exercises-list="store.state.exercises"
       :edited-workout="store.state.editedWorkout"
       :is-edit="workoutIsEdit"

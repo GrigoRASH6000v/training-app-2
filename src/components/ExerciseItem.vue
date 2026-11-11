@@ -56,11 +56,11 @@
       el-col(:span="8")
         .flex.flex-col
           .text-xs.uppercase.text-gray-300.mb-2 Подходы
-          .text-xs.text-gray-300 {{ itemData.repetition }}
+          .text-xs.text-gray-300 {{ isArray(itemData.approache) ? itemData.approache.length : itemData.approache }}
       el-col(:span="8")
         .flex.flex-col
           .text-xs.uppercase.text-gray-300.mb-2 Повторения
-          .text-xs.text-gray-300 {{ isArray(itemData.approache) ? itemData.approache.length : itemData.approache }}
+          .text-xs.text-gray-300 {{ itemData.repetition }}
       el-col(:span="8")
         .flex.flex-col
           .text-xs.uppercase.text-gray-300.mb-2 Отдых, сек
