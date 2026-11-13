@@ -63,10 +63,14 @@
       });
 
       const groupedItems = computed(() => filteredItems.value.reduce((acc, item) => {
-        const currentGroup = groups.find(group => group.id === item.group) ||  { label: 'Другое', value: 7 };
+        const currentGroup = groups.find(group => group.value === item.group);
 
         if (!currentGroup) {
-          return acc;
+          if (!acc[7]) {
+            acc[7] = { title: 'Другое', exercises: [] };
+          }
+
+          acc[7].exercises.push(item);
         } else if (!acc[currentGroup.value]) {
           acc[currentGroup.value] = {
             title: currentGroup.label,
