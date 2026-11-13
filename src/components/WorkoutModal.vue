@@ -34,8 +34,8 @@
 
         el-progress(
           :percentage="workoutProgress"
-          status="success"
-          text-inside
+          :color="colors.lime[500]"
+          :show-text="false"
         )
 
       transition(name="fade")

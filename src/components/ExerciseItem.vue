@@ -113,7 +113,7 @@
     background-color: $black;
     padding: 16px;
     border-radius: 8px;
-    border: 1px solid $black-light;
+    border: 1px solid $gray;
     margin-bottom: 20px;
 
     &:not(:last-child) {

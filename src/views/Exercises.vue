@@ -3,7 +3,7 @@
     h1.text-white.text-sm.font-bold Упражнения
 
     section.section.editor(class="backdrop-blur-[10px] bg-white/30")
-      plan-editor(@save="handlePlanSave")
+      plan-editor(@save="plan => store.commit('addExercises', plan)")
 
     section.section(class="backdrop-blur-[10px] bg-white/30")
       .flex.items-center.justify-between
@@ -12,6 +12,21 @@
       exercises-list(
         :items="filteredExercises"
         @remove="store.commit('removeExercise', $event)"
+        @edit="store.commit('setEditedExercise', $event)"
+      )
+
+    el-drawer(
+      :model-value="!!store.state.editedExercise",
+      body-class="px-4"
+      header-class="!mb-2"
+      title="Редактирование упражнения"
+      :size="mq.sm ? '100%' : 375"
+      @update:model-value="store.commit('setEditedExercise', null)"
+    )
+      plan-editor(
+        v-if="store.state.editedExercise"
+        :editing-data="store.state.editedExercise"
+        @update="handleUpdatePlan"
       )
 </template>
 
@@ -22,6 +37,7 @@
   import IconEye from '~/components/ui/icons/eye';
   import { useStore } from 'vuex';
   import { ref, computed } from 'vue';
+  import { useMq } from 'vue3-mq';
 
   export default {
     name: 'ExercisesView',
@@ -32,6 +48,7 @@
       ExercisesList,
     },
     setup () {
+      const mq = useMq();
       const activePlainEditor = ref(false);
       const exercisesList = ref(false);
       const searchQuery = ref('');
@@ -45,17 +62,19 @@
         );
       });
 
-      const handlePlanSave = plan => {
-        store.commit('addExercises', plan);
-      };
+      const handleUpdatePlan = plan => {
+        store.commit('updateExercise', plan);
+        store.commit('setEditedExercise', null);
+      }
 
       return {
         activePlainEditor,
         exercisesList,
         searchQuery,
         filteredExercises,
-        handlePlanSave,
+        handleUpdatePlan,
         store,
+        mq,
       };
     }
   };

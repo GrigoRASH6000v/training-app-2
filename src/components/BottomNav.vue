@@ -60,8 +60,12 @@
     justify-content: space-around;
     align-items: center;
     padding: 0.5rem 0;
-    border-radius: 8px;
+    border-radius: 8px 8px 0 0;
     background-color: $black;
+
+    &.--active {
+      opacity: 1;
+    }
   }
 
   .bottom-nav-item {
@@ -80,9 +84,5 @@
   .bottom-nav-item.router-link-active,
   .bottom-nav-item.active {
     color: #181236;
-  }
-
-  .bottom-nav-item.active {
-    opacity: 1;
   }
 </style>
