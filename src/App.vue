@@ -34,6 +34,7 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
 
   body {

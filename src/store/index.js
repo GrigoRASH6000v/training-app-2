@@ -6,6 +6,36 @@ export default createStore({
   state: {
     exercises: [],
     workouts: [],
+    exercisesGroups: [
+      {
+        label: 'Грудь',
+        value: 1
+      },
+      {
+        label: 'Спина',
+        value: 2
+      },
+      {
+        label: 'Ноги',
+        value: 3
+      },
+      {
+        label: 'Плечи',
+        value: 4
+      },
+      {
+        label: 'Руки',
+        value: 5
+      },
+      {
+        label: 'Пресс',
+        value: 6
+      },
+      {
+        label: 'Другое',
+        value: 7
+      },
+    ],
     activeWorkout: null,
     editedWorkout: null,
     editedExercise: null,
@@ -63,9 +93,13 @@ export default createStore({
     addWorkout(state, payload) {
       state.workouts.push(payload);
     },
+    updateExercise(state, payload) {
+      const index = state.exercises.findIndex(exercise => exercise.id === payload.id);
+      if (~index) state.exercises[index] = payload;
+    },
     updateWorkout(state, payload) {
       const index = state.workouts.findIndex(workout => workout.id === payload.id);
-      state.workouts[index] = payload;
+      if (~index) state.workouts[index] = payload;
     },
     updateHistory(state, { index, value }) {
       state.history[index] = value;
