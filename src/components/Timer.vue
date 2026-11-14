@@ -6,7 +6,7 @@
     :color="colors.lime[500]"
   )
     template(#default)
-      .text-2xl.font-bold.text-lime-500(v-if="total > 0") {{ displaySeconds }}
+      .text-2xl.font-bold.text-lime-500(v-if="!finishMessageIsShow") {{ displaySeconds }}
       .text-xl.font-bold.timer-finished(v-else) ЕБАШЬ!
 </template>
 
@@ -30,6 +30,7 @@
     setup(props, { emit }) {
       const total = ref(props.initialSeconds);
       let timer = null;
+      const finishMessageIsShow = ref(false);
 
       const displaySeconds = computed(() => {
         return String(Math.max(0, total.value)).padStart(2, '0');
@@ -41,7 +42,7 @@
         } else {
           clearInterval(timer);
           timer = null;
-          emit('finish');
+          finishMessageIsShow.value = true;
         }
       };
 
@@ -49,6 +50,7 @@
 
       const start = () => {
         if (timer) return;
+        finishMessageIsShow.value = false;
         timer = setInterval(tick, 1000);
       };
 
@@ -56,11 +58,13 @@
         clearInterval(timer);
         timer = null;
         total.value = seconds;
-        start();
+        if (total.value !== 0) start();
       };
 
       const percentage = computed(() => {
         const unit = props.initialSeconds / 100;
+
+        if (total.value === 0) return 0;
         return total.value / unit;
       });
 
@@ -78,6 +82,7 @@
         percentage,
         isFinished,
         displaySeconds,
+        finishMessageIsShow,
       };
     }
   };

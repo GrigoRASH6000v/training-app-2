@@ -27,7 +27,7 @@
         .flex.flex-1.flex-col(
           v-if="exercise.isEdit"
         )
-          .text-xs.text-gray-500.mb-2.mx-auto.uppercase Подходы
+          .text-xs.text-gray-300.mb-2.mx-auto.uppercase Подходы
           el-input-number(
             v-if="exercise.isEdit"
             v-model="exercise.repetition"
@@ -40,7 +40,7 @@
         .flex.flex-1.flex-col(
           v-if="exercise.isEdit"
         )
-          .text-xs.text-gray-500.mb-2.mx-auto.uppercase Повторения
+          .text-xs.text-gray-300.mb-2.mx-auto.uppercase Повторения
 
           el-input-number(
             v-if="exercise.isEdit"
@@ -52,7 +52,7 @@
           )
 
         .flex.flex-1.flex-col(v-if="exercise.isEdit")
-          .text-xs.text-gray-500.mb-2.mx-auto.uppercase Отдых, сек
+          .text-xs.text-gray-300.mb-2.mx-auto.uppercase Отдых, сек
 
           el-input-number(
             v-if="exercise.isEdit",
@@ -222,6 +222,7 @@
 
       const fillData = () => {
         name.value = ref(props.editedWorkout.name).value;
+        if (name.value) nameIsSave.value = true;
         exercises.value = ref(props.editedWorkout.exercises).value;
       };
 
