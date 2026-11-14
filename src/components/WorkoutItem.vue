@@ -1,21 +1,20 @@
 <template lang="pug">
   .workout-item
     el-row
-      el-col.mb-4(:span="17")
+      el-col.mb-4(:span="20")
         .flex.flex-col
-          .text-xs.text-purple-100 Название
-          .text-xs.text-purple-100 {{ itemData.name }}
-      el-col(:span="7")
+          .text-md.text-purple-100 {{ itemData.name }}
+      el-col(:span="4")
         .flex
           el-button(
-            round,
+            class="!px-1"
             size="small"
             @click="emit('edit', itemData)"
           )
             icon-pen(size="14")
 
           el-button(
-            round,
+            class="!px-1"
             size="small"
             type="danger"
             @click="remove(itemData.id)"

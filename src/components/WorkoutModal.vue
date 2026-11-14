@@ -110,7 +110,7 @@
                     )
 
       s-expander
-        .flex.items-center.justify-between(v-if="currentTime !== null && workoutProgress !== 100" )
+        .flex.items-center.justify-between(v-if="workoutProgress !== 100" )
           timer(:initial-seconds="currentTime" size="64")
 </template>
 
@@ -130,7 +130,7 @@
   import SExpander from '~/components/ui/SExpander';
   import { useStore } from 'vuex';
   import colors from 'tailwindcss/colors';
-  import { ref, computed, reactive } from 'vue';
+  import { ref, computed, reactive, nextTick } from 'vue';
   import getOrdinal from '~/utils/getOrdinal';
   import sleep from '~/utils/sleep';
   import { ElMessageBox } from 'element-plus';
@@ -162,7 +162,7 @@
     setup(_, ctx) {
       const store = useStore();
       const firstApproacheIsSaved = ref(false);
-      const currentTime = ref(null);
+      const currentTime = ref(0);
       const activeWorkout = store.state.activeWorkout;
       const workout = reactive(activeWorkout ? { ...activeWorkout } : null);
       const lastIdenticalWorkout = workout && store.state.history.reverse().find(el => el.workoutId === workout.id) || null ;
@@ -203,8 +203,19 @@
         currentTime.value = workout.exercises.find(exercise => exercise.isActive && exercise.approache.length ? !!exercise.approache.find(approache => approache.isActive) : false)?.restTime || 120;
       };
 
+      const scrollToTarget = () => {
+        const targetElement = document.querySelector('.exercise-is-active');
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+          });
+        }
+      };
+
       const saveApproache = async (exerciseIdx, approacheIdx) => {
-        currentTime.value = null;
+        currentTime.value = 0;
         if (!firstApproacheIsSaved.value) firstApproacheIsSaved.value = true;
 
         const exercise = workout.exercises[exerciseIdx];
@@ -217,7 +228,7 @@
 
         const allApproacheIsComplete = exercise.approache.every(el => el.isComplete);
 
-        const hasNextExercise = workout.exercises[exerciseIdx + 1]
+        const hasNextExercise = workout.exercises[exerciseIdx + 1];
         if (allApproacheIsComplete) {
           exercise.isActive = false;
           exercise.isComplete = true;
@@ -225,6 +236,8 @@
           if (hasNextExercise) {
             workout.exercises[exerciseIdx + 1].isActive = true;
             workout.exercises[exerciseIdx + 1].approache[0].isActive = true;
+            await nextTick();
+            scrollToTarget();
           }
         }
 
