@@ -30,7 +30,7 @@
           .text-xs.text-gray-300.mb-2.mx-auto.uppercase Подходы
           el-input-number(
             v-if="exercise.isEdit"
-            v-model="exercise.repetition"
+            v-model="exercise.approache"
             class="!w-full"
             placeholder="Выбор повторений"
             :max="30"
@@ -44,7 +44,7 @@
 
           el-input-number(
             v-if="exercise.isEdit"
-            v-model="exercise.approache"
+            v-model="exercise.repetition"
             class="!w-full"
             placeholder="Выбор подходов"
             :max="30"

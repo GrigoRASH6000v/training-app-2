@@ -23,23 +23,23 @@
         .flex.flex-col.px-2
           .text-xs.uppercase.text-gray-300.mx-auto.mb-2 Подходы
           el-input-number(
-            :model-value="itemData.repetition"
+            :model-value="itemData.approache"
             class="!w-full"
             placeholder="Выбор повторений"
             :max="30"
             size="small"
-            @update:model-value="value => $emit('update', { name: 'repetition', value })"
+            @update:model-value="value => $emit('update', { name: 'approache', value })"
           )
       el-col(:span="8")
         .flex.flex-col.px-2
           .text-xs.uppercase.text-gray-300.mx-auto.mb-2 Повторения
           el-input-number(
-            :model-value="itemData.approache"
+            :model-value="itemData.repetition"
             class="!w-full"
             placeholder="Выбор подходов"
             :max="30"
             size="small"
-            @update:model-value="value => $emit('update', { name: 'approache', value })"
+            @update:model-value="value => $emit('update', { name: 'repetition', value })"
           )
       el-col(:span="8")
         .flex.flex-col.px-2
