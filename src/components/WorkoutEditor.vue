@@ -1,5 +1,5 @@
 <template lang="pug">
-  .h-full.flex.flex-col
+  .h-full.flex.flex-col.overflow-y-auto.pr-1
     .field(v-if="!nameIsSave" )
       .text-xs.text-gray-500.mb-2 Название
       s-validate(:v="v$.name")

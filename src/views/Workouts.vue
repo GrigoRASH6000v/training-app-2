@@ -42,7 +42,7 @@
 
   el-drawer(
     :model-value="!!store.state.editedWorkout",
-    body-class="px-4"
+    body-class="!pl-5 !pr-1"
     header-class="!mb-2"
     :title="store.state.editedWorkout?.id ? 'Редактирование тренировки' : 'Создание тренировки'"
     :size="mq.sm ? '100%' : 375"
