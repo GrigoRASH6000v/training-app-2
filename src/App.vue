@@ -11,7 +11,7 @@
 
 <script>
   import BottomNav from '~/components/BottomNav';
-  import { useStore } from 'vuex';
+  import { useStore } from '~/store';
 
   export default {
     name: 'App',
@@ -20,7 +20,7 @@
     },
     setup() {
       const store = useStore();
-      store.dispatch('initializeStore');
+      store.initializeStore();
     }
   };
 </script>

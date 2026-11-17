@@ -13,7 +13,7 @@
         :span="19"
         class="!flex"
       )
-        .text-xs.text-gray-300 {{ store.getters.getExerciseById(itemData.exerciseId)?.title || '' }}
+        .text-xs.text-gray-300 {{ store.getExerciseById(itemData.exerciseId)?.title || '' }}
       el-col.items-center(:span="2" class="!flex")
         .ml-auto.flex.items-center
           slot
@@ -74,7 +74,7 @@
   import IconMenu from '~/components/ui/icons/menu';
   import IconChevron from '~/components/ui/icons/chevron';
   import isArray from 'lodash/isArray';
-  import { useStore } from "vuex";
+  import { useStore } from '~/store';
   import { ref } from 'vue';
 
   export default {
@@ -99,6 +99,7 @@
     },
     setup() {
       const store = useStore();
+
       return {
         store,
         isArray,

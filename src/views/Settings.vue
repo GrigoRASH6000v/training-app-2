@@ -29,8 +29,7 @@
 </template>
 
 <script>
-  import { useStore } from 'vuex';
-  import IconSettings from '~/components/ui/icons/settings';
+  import { useStore } from '~/store';
   import IconDownload from '~/components/ui/icons/download';
   import IconUpload from '~/components/ui/icons/upload';
   import { ElNotification } from 'element-plus';
@@ -38,7 +37,6 @@
   export default {
     name: 'SettingsView',
     components: {
-      IconSettings,
       IconDownload,
       IconUpload
     },
@@ -47,7 +45,7 @@
 
       const exportStore = async () => {
         try {
-          await store.dispatch('saveState');
+          await store.saveState();
           ElNotification.success({ title: 'Успех', message: 'Данные выгружены' });
         } catch (error) {
           ElNotification.error({ title: 'Ошибка', message: 'Не удалось выгрузить данные' });
@@ -65,7 +63,7 @@
           const reader = new FileReader();
           reader.onload = (e) => {
             try {
-              store.commit('loadState', JSON.parse(e.target.result))
+              store.loadState(JSON.parse(e.target.result))
             } catch (err) {
               ElNotification.error({ title: 'Ошибка', message: 'Файл не является корректным JSON: ' + err.message });
             }

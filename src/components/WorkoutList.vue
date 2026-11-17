@@ -12,7 +12,7 @@
 
 <script>
   import WorkoutItem from '~/components/WorkoutItem';
-  import { useStore } from 'vuex';
+  import { useStore } from '~/store';
 
   export default {
     name: 'WorkoutList',
@@ -27,7 +27,7 @@
     },
     setup() {
       const store = useStore();
-      const getExercise = id => store.getters.getExerciseById(id)?.title || '';
+      const getExercise = id => store.getExerciseById(id)?.title || '';
       return {
         getExercise
       };

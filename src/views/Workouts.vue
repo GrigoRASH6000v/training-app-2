@@ -5,7 +5,7 @@
     .flex.items-center.justify-between
       .text-xs.font-bold.text-white Создать тренировку
       el-button(
-        v-if="!store.state.editedWorkout"
+        v-if="!store.editedWorkout"
         size="small"
         round
         type="primary"
@@ -13,13 +13,13 @@
       )
         icon-plus(size="14")
 
-  template(v-if="store.state.workouts.length")
+  template(v-if="store.workouts.length")
     h2.text-white.text-sm.font-bold Список тренировок
 
     workout-list(
-      v-model="store.state.workouts"
+      v-model="store.workouts"
       @start="setActiveWorkout"
-      @remove="store.commit('removeWorkout', $event)"
+      @remove="id => store.workouts = store.workouts.filter(w => w.id !== id)"
       @edit="editWorkout"
     )
 
@@ -29,33 +29,33 @@
 
   workout-modal(
     v-if="workoutModalIsShow"
-    :model-value="!!store.state.activeWorkout"
+    :model-value="!!store.activeWorkout"
     @close="workoutModalIsShow = false"
   )
 
   exercise-edit-modal(
-    v-if="!!store.state.editedExercise"
-    :model-value="!!store.state.editedExercise"
-    :exercise="store.getters.getExerciseInWorkoutById(store.state.editedExercise)"
-    @update:model-value="store.commit('setEditedExercise', $event)"
+    v-if="!!store.editedExercise"
+    :model-value="!!store.editedExercise"
+    :exercise="store.getExerciseInWorkoutById(store.editedExercise)"
+    @update:model-value="store.editedExercise = null"
   )
 
   el-drawer(
-    :model-value="!!store.state.editedWorkout",
+    :model-value="!!store.editedWorkout"
     body-class="!pl-5 !pr-1"
     header-class="!mb-2"
-    :title="store.state.editedWorkout?.id ? 'Редактирование тренировки' : 'Создание тренировки'"
+    :title="store.editedWorkout?.id ? 'Редактирование тренировки' : 'Создание тренировки'"
     :size="mq.sm ? '100%' : 375"
-    @update:model-value="store.commit('setEditedWorkout', null)"
+    @update:model-value="store.editedWorkout = null"
   )
     workout-editor(
-      v-if="!!store.state.editedWorkout"
-      :exercises-list="store.state.exercises"
-      :edited-workout="store.state.editedWorkout"
+      v-if="!!store.editedWorkout"
+      :exercises-list="store.exercises"
+      :edited-workout="store.editedWorkout"
       :is-edit="workoutIsEdit"
-      @edited-workout:update="store.commit('setEditedWorkout', $event)"
-      @save="store.commit('addWorkout', $event)"
-      @update="store.commit('updateWorkout', $event)"
+      @edited-workout:update="val => store.editedWorkout = val"
+      @save="workout => store.workouts.push(workout)"
+      @update="updated => { const idx = store.workouts.findIndex(w => w.id === updated.id); if (~idx) store.workouts[idx] = updated; }"
     )
 </template>
 
@@ -68,7 +68,7 @@
   import IconClipboard from '~/components/ui/icons/clipboard';
   import colors from 'tailwindcss/colors';
   import { useMq } from 'vue3-mq';
-  import { useStore } from 'vuex';
+  import { useStore } from '~/store';
   import { ref, watch } from 'vue';
 
   export default {
@@ -89,21 +89,21 @@
       const workoutIsEdit = ref(false);
 
       const createNewWorkout = () => {
-        store.commit('setEditedWorkout', {
+        store.editedWorkout = {
           id: null,
           name: '',
           exercises: []
-        });
+        };
       };
 
       const editWorkout = (v) => {
         workoutIsEdit.value = true;
-        store.commit('setEditedWorkout', v);
+        store.editedWorkout = v;
       }
 
       const setActiveWorkout = workoutId => {
-        const fullWorkout = store.getters.getWorkoutById(workoutId);
-        const lastIdenticalWorkout = store.state.history.reverse().find(el => el.workoutId === workoutId) || null;
+        const fullWorkout = store.getWorkoutById(workoutId);
+        const lastIdenticalWorkout = store.history.reverse().find(el => el.workoutId === workoutId) || null;
 
         const getTrend = (exerciseIdx, approacheIndex, weight) => {
           return lastIdenticalWorkout ? weight - lastIdenticalWorkout.exercises[exerciseIdx]?.approache?.[approacheIndex]?.weight || 0 : 0 ;
@@ -116,7 +116,7 @@
           timer: 0,
           exercises: fullWorkout.exercises.map((exercise, idx) => ({
             ...exercise,
-            title: store.getters.getExerciseById(exercise.exerciseId)?.title || '',
+            title: store.getExerciseById(exercise.exerciseId)?.title || '',
             isActive: idx === 0,
             isComplete: false,
             approache: Array(exercise.approache).fill(null).map((_, index) => ({
@@ -129,14 +129,14 @@
           }))
         };
 
-        store.commit('setActiveWorkout', updatedWorkout);
+        store.activeWorkout = updatedWorkout;
       }
 
-      watch(() => !!store.state.activeWorkout, newValue => {
+      watch(() => !!store.activeWorkout, newValue => {
         if (newValue) workoutModalIsShow.value = true;
       }, { immediate: true });
 
-      watch(() => store.state.editedWorkout, (v) => {
+      watch(() => store.editedWorkout, (v) => {
         if (!v) workoutIsEdit.value = false;
       });
 
@@ -160,4 +160,3 @@
     background-color: $black;
   }
 </style>
-

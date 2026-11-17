@@ -50,7 +50,7 @@
   } from 'chart.js';
   import WeightDiaryModal from '~/components/WeightDiaryModal';
   import IconPlus from '~/components/ui/icons/plus';
-  import { useStore } from 'vuex';
+  import { useStore } from '~/store';
   import { computed, ref } from 'vue';
   import moment from 'moment';
 
@@ -67,9 +67,9 @@
       const store = useStore();
       const showModal = ref(false);
 
-      store.dispatch('initializeStore');
+      store.initializeStore();
 
-      const entries = computed(() => store.state.weightDiary || []);
+      const entries = computed(() => store.weightDiary || []);
 
       const sortedEntries = computed(() => {
         return [...entries.value].sort((a, b) => new Date(b.date) - new Date(a.date));

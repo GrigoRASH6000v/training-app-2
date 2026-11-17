@@ -1,168 +1,67 @@
-import { createStore } from 'vuex';
+import { defineStore } from 'pinia';
 import { saveAs } from 'file-saver';
 import vuexState from './vuex-state.json';
 
-export default createStore({
-  state: {
+export const useStore = defineStore('training', {
+  state: () => ({
     exercises: [],
     workouts: [],
     exercisesGroups: [
-      {
-        label: 'Грудь',
-        value: 1
-      },
-      {
-        label: 'Спина',
-        value: 2
-      },
-      {
-        label: 'Ноги',
-        value: 3
-      },
-      {
-        label: 'Плечи',
-        value: 4
-      },
-      {
-        label: 'Руки',
-        value: 5
-      },
-      {
-        label: 'Пресс',
-        value: 6
-      },
-      {
-        label: 'Другое',
-        value: 7
-      },
+      { label: 'Грудь', value: 1 },
+      { label: 'Спина', value: 2 },
+      { label: 'Ноги', value: 3 },
+      { label: 'Плечи', value: 4 },
+      { label: 'Руки', value: 5 },
+      { label: 'Пресс', value: 6 },
+      { label: 'Другое', value: 7 },
     ],
     activeWorkout: null,
     editedWorkout: null,
     editedExercise: null,
     history: [],
     weightDiary: [],
-  },
+  }),
   getters: {
-    getExerciseInWorkoutById: state => id => {
+    getExerciseInWorkoutById: (state) => (id) => {
       if (!state.editedWorkout) return null;
       return state.editedWorkout.exercises.find(exercise => exercise.exerciseId === id);
     },
-    getExerciseById: state => id => {
+    getExerciseById: (state) => (id) => {
       return state.exercises.find(exercise => exercise.id === id) || null;
     },
-    getWorkoutById: state => id => {
-      return state.workouts.find(workout => {
-        return workout.id === id;
-      }) || null;
-    }
-  },
-  mutations: {
-    loadState(state, payload) {
-      Object.keys(payload).forEach(key => {
-        if (state[key] !== undefined) state[key] = payload[key];
-      })
+    getWorkoutById: (state) => (id) => {
+      return state.workouts.find(workout => workout.id === id) || null;
     },
-    updateExerciseInWorkout(state, { workoutId, exerciseId, updates }) {
-      const workoutIndex = state.workouts.findIndex(workout => workout.id === workoutId);
-      if (~workoutIndex) {
-        const exerciseIndex = state.workouts[workoutIndex].exercises.findIndex(exercise => exercise.exerciseId === exerciseId);
-        if (~exerciseIndex) {
-          const exercise = state.workouts[workoutIndex].exercises[exerciseIndex];
-          state.workouts[workoutIndex].exercises[exerciseIndex] = { ...exercise, ...updates};
-        }
-      }
-    },
-    setEditedExercise(state, payload) {
-      state.editedExercise = payload;
-    },
-    setEditedWorkout(state, payload) {
-      state.editedWorkout = payload;
-    },
-    removeWorkout(state, payload) {
-      state.workouts = state.workouts.filter(workout => workout.id !== payload);
-    },
-    setActiveWorkout(state, payload) {
-      state.activeWorkout = payload;
-    },
-    addExercises(state, payload) {
-      state.exercises.push(payload);
-    },
-    removeExercise(state, index)  {
-      state.exercises = state.exercises.filter((_, idx) => idx !== index);
-    },
-    addWorkout(state, payload) {
-      state.workouts.push(payload);
-    },
-    updateExercise(state, payload) {
-      const index = state.exercises.findIndex(exercise => exercise.id === payload.id);
-      if (~index) state.exercises[index] = payload;
-    },
-    updateWorkout(state, payload) {
-      const index = state.workouts.findIndex(workout => workout.id === payload.id);
-      if (~index) state.workouts[index] = payload;
-    },
-    updateHistory(state, { index, value }) {
-      state.history[index] = value;
-    },
-    clearHistory(state) {
-      state.history = [];
-    },
-    addHistory(state, value) {
-      state.history.push(value);
-    },
-    addWeightEntry(state, weight) {
-      state.weightDiary.push(weight);
-    },
-    removeWeightEntry(state, payload) {
-      state.weightDiary = state.weightDiary.filter(entry => entry.date !== payload);
-    },
-    clearWeightDiary(state) {
-      state.weightDiary = [];
-    }
   },
   actions: {
-    saveWorkoutToHistory({ state, commit }, workout) {
-      const historyItemIndex = state.history.findIndex(el => el.id === workout.id);
-
+    saveWorkoutToHistory(workout) {
+      const historyItemIndex = this.history.findIndex(el => el.id === workout.id);
       if (~historyItemIndex) {
-        commit('updateHistory', { index: historyItemIndex, value: workout });
+        this.history[historyItemIndex] = workout;
       } else {
-        commit('addHistory', workout);
+        this.history.push(workout);
       }
     },
-    initializeStore({ state, }) {
+    initializeStore() {
       if (localStorage.getItem('state')) {
-        this.replaceState(
-          Object.assign(state, {
-            ...JSON.parse(localStorage.getItem('state')),
-            editedWorkout: null,
-          })
-        );
-
-      } else if(vuexState) {
-        this.replaceState(
-          Object.assign(state, vuexState)
-        );
+        const saved = JSON.parse(localStorage.getItem('state'));
+        Object.assign(this.$state, saved);
+      } else if (vuexState) {
+        Object.assign(this.$state, vuexState);
       }
     },
-    saveState({ state, }) {
+    saveState() {
       try {
-        const jsonState = JSON.stringify(state, null, 2);
-
+        const jsonState = JSON.stringify(this.$state, null, 2);
         const blob = new Blob([jsonState], { type: 'application/json' });
-
-        saveAs(blob, 'vuex-state.json');
+        saveAs(blob, 'training-app-store.json');
       } catch (e) {
         console.warn(e);
       }
     },
-    loadState({ state }, data) {
-      this.replaceState(
-        Object.assign(state, data)
-      );
-    }
+    loadState(data) {
+      Object.assign(this.$state, data);
+    },
   },
-  modules: {
-    //
-  }
+  persist: true,
 });

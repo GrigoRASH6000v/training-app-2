@@ -63,7 +63,7 @@
   import { toRaw, ref } from 'vue';
   import { useVuelidate } from '@vuelidate/core';
   import { ElNotification } from 'element-plus'
-  import { useStore } from "vuex";
+  import { useStore } from '~/store';
 
   export default {
     name: 'ExerciseEditModal',
@@ -85,7 +85,7 @@
       const store = useStore();
       const rawExercise = toRaw(props.exercise);
       const exerciseLocal = structuredClone(rawExercise);
-      const fullExercise = { ...exerciseLocal, detail: exerciseLocal ? toRaw(store.getters.getExerciseById(exerciseLocal.exerciseId)) : null };
+      const fullExercise = { ...exerciseLocal, detail: exerciseLocal ? toRaw(store.getExerciseById(exerciseLocal.exerciseId)) : null };
       const repetition = ref(fullExercise.repetition);
       const approache = ref(fullExercise.approache);
       const restTime = ref(fullExercise.restTime);
@@ -98,19 +98,23 @@
           ElNotification.warning({ title: 'Внимание', message: 'Заполните все обязательные поля' })
         } else {
           try {
-            store.commit('updateExerciseInWorkout', {
-              workoutId: store.state.editedWorkout.id,
-              exerciseId: props.exercise.exerciseId,
-              updates: {
-                approache: approache.value,
-                repetition: repetition.value,
-                restTime: restTime.value
+            const workout = store.editedWorkout;
+            const workoutIndex = store.workouts.findIndex(w => w.id === workout.id);
+            if (~workoutIndex) {
+              const exerciseIndex = store.workouts[workoutIndex].exercises.findIndex(e => e.exerciseId === props.exercise.exerciseId);
+              if (~exerciseIndex) {
+                store.workouts[workoutIndex].exercises[exerciseIndex] = {
+                  ...store.workouts[workoutIndex].exercises[exerciseIndex],
+                  approache: approache.value,
+                  repetition: repetition.value,
+                  restTime: restTime.value
+                };
               }
-            });
+            }
             ElNotification.success({ title: 'Успех', message: 'Упражнение обновлено' });
             ctx.emit('update:model-value', null);
           } catch (error) {
-            ElNotification.success({ title: 'Ошибка', message: 'Ошибка при обновлении упражнения' })
+            ElNotification.error({ title: 'Ошибка', message: 'Ошибка при обновлении упражнения' })
             console.warn(error);
           }
         }

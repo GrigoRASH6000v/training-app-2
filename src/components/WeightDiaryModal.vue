@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import { useStore } from 'vuex';
+  import { useStore } from '~/store';
   import WeightPicker from '~/components/ui/WeightPicker';
   import IconArrowTrendUp from '~/components/ui/icons/arrow-trend-up';
   import IconArrowTrendDown from '~/components/ui/icons/arrow-trend-down';
@@ -51,11 +51,11 @@
     },
     setup(props, { emit }) {
       const store = useStore();
-      const weight = ref(store.state.weightDiary.length ? store.state.weightDiary[store.state.weightDiary.length - 1].weight : 70);
+      const weight = ref(store.weightDiary.length ? store.weightDiary[store.weightDiary.length - 1].weight : 70);
       const trendIsShow = ref(false);
 
       const save = () => {
-        store.commit('addWeightEntry', {
+        store.weightDiary.push({
           weight: weight.value,
           date: Date.now(),
         });
@@ -65,7 +65,7 @@
       };
 
       const trend = computed(() => {
-        const diary = store.state.weightDiary;
+        const diary = store.weightDiary;
         if (diary.length < 2) return 0;
         const previousRecord = diary[diary.length - 2];
         return previousRecord.weight - weight.value;

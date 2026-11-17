@@ -32,7 +32,7 @@
 <script>
   import { ref } from 'vue';
   import { ElNotification } from 'element-plus'
-  import { useStore } from 'vuex';
+  import { useStore } from '~/store';
 
   export default {
     name: 'PlanEditor',
@@ -45,7 +45,7 @@
     },
     setup(props, { emit }) {
       const store = useStore();
-      const groups = store.state.exercisesGroups;
+      const groups = store.exercisesGroups;
       const title = ref('');
       const notes = ref('');
       const group = ref(1);

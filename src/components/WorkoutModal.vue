@@ -128,7 +128,7 @@
   import IconFlag from '~/components/ui/icons/flag';
   import ExerciseItem from '~/components/ExerciseItem';
   import SExpander from '~/components/ui/SExpander';
-  import { useStore } from 'vuex';
+  import { useStore } from '~/store';
   import colors from 'tailwindcss/colors';
   import { ref, computed, reactive, nextTick } from 'vue';
   import getOrdinal from '~/utils/getOrdinal';
@@ -163,9 +163,9 @@
       const store = useStore();
       const firstApproacheIsSaved = ref(false);
       const currentTime = ref(0);
-      const activeWorkout = store.state.activeWorkout;
+      const activeWorkout = store.activeWorkout;
       const workout = reactive(activeWorkout ? { ...activeWorkout } : null);
-      const lastIdenticalWorkout = workout && store.state.history.reverse().find(el => el.workoutId === workout.id) || null ;
+      const lastIdenticalWorkout = workout && store.history.reverse().find(el => el.workoutId === workout.id) || null ;
 
       const closeDrawer = () => {
         ElMessageBox.confirm(
@@ -179,7 +179,7 @@
           },
         )
           .then(() => {
-            store.commit('setActiveWorkout', null);
+            store.activeWorkout = null;
             ctx.emit('close');
           })
       }
@@ -263,8 +263,8 @@
           },
         )
           .then(() => {
-            store.commit('setActiveWorkout', null);
-            store.dispatch('saveWorkoutToHistory', {
+            store.activeWorkout = null;
+            store.saveWorkoutToHistory({
               id: Date.now(),
               workoutId: workout.id,
               name: workout.name,
@@ -283,7 +283,7 @@
           })
       };
 
-      const updateWorkout = () => store.commit('setActiveWorkout', workout);
+      const updateWorkout = () => { store.activeWorkout = workout; }
 
       return {
         store,

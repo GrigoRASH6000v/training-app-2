@@ -26,7 +26,7 @@
                 class="!px-1",
                 size="small",
                 type="danger"
-                @click="$emit('remove', key)"
+                @click="$emit('remove', exercise.id)"
               )
                 icon-remove(size="14" color="#fff")
 </template>
@@ -35,7 +35,7 @@
   import IconRemove from '~/components/ui/icons/remove';
   import IconPen from '~/components/ui/icons/pen';
   import { ref, computed } from 'vue';
-  import { useStore } from 'vuex';
+  import { useStore } from '~/store';
 
   export default {
     name: 'ExercisesList',
@@ -51,7 +51,7 @@
     },
     setup(props) {
       const store = useStore();
-      const groups = store.state.exercisesGroups;
+      const groups = store.exercisesGroups;
       const search = ref('');
 
       const sortedList = computed(() => props.items.sort((a, b) => a.title.localeCompare(b.title)));
